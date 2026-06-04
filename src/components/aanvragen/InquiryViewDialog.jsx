@@ -91,7 +91,7 @@ export default function InquiryViewDialog({
                           <Badge
                             className={
                               svc.status === "active"
-                                ? "border-0 bg-emerald-100 text-emerald-600 shrink-0"
+                                ? "border-0 bg-emerald-100 text-emerald-600 shrink-01"
                                 : "border-0 bg-gray-200 text-gray-600 shrink-0"
                             }
                           >
