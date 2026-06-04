@@ -1,0 +1,312 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Uber Move – loaded from src/local/ ── */
+@font-face {
+  font-family: "Uber Move";
+  src: url("./local/UberMoveTextLight.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uber Move";
+  src: url("./local/UberMoveTextRegular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uber Move";
+  src: url("./local/UberMoveTextMedium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uber Move";
+  src: url("./local/UberMoveTextBold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    /* --- Colors: Brand & Foundation --- */
+    --primary: 29 78 216; /* #1D4ED8 - Figma Primary (space-separated for rgb() slash syntax) */
+    --primary-foreground: 255 255 255;
+    --secondary: 220 10% 94%; /* Light gray for secondary elements */
+    --secondary-foreground: 220 10% 20%; /* Dark gray for secondary text */
+    --background: 251 251 251;
+    --foreground: 17 17 17;
+    --card: 255 255 255;
+    --card-foreground: 17 17 17;
+    --popover: 255 255 255;
+    --popover-foreground: 17 17 17;
+    --muted: 245 245 245;
+    --muted-foreground: 115 115 115;
+    --accent: 245 245 245;
+    --accent-foreground: 17 17 17;
+
+    /* --- Colors: Status --- */
+    --success: 142 72% 29%; /* Green for Active badges */
+    --success-foreground: 142 72% 95%;
+    --success-bg: 142 72% 95%;
+    --destructive: 239 68 68; /* Red 500 for errors/delete */
+
+    /* --- Colors: Bg Main --- */
+    --bg-main: 251, 251, 251; /* Figma Bg */
+    --bg-card: 255, 255, 255;
+    --bg-sidebar: 255, 255, 255;
+
+    /* --- Colors: Typography (based on Figma RGBA) --- */
+    --title: 0, 0, 0; /* rgba(0,0,0,1) */
+    --subtitle: 0, 0, 0; /* rgba(0,0,0,0.5) */
+    --text-muted: 107, 114, 128; /* Gray 500 */
+
+    /* --- Colors: Accents/Borders --- */
+    --border: 229, 231, 235; /* Gray 200 */
+    --input: 243, 244, 246; /* Gray 100 */
+    --ring: 29 78 216; /* Focus ring - space-sep for slash usage */
+
+    /* --- Layout & Spacing --- */
+    --sidebar-width: 260px; /* Figma Sidebar Width */
+    --header-height: 72px;
+    --radius: 12px; /* Premium rounded look */
+    --radius-sm: 8px;
+
+    /* --- Shadows (Premium Enterprise Elevation) --- */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-card:
+      0 4px 6px -1px rgb(0 0 0 / 0.02), 0 2px 4px -2px rgb(0 0 0 / 0.02);
+  }
+
+  body {
+    background-color: rgb(var(--bg-main));
+    color: rgba(var(--title), 1);
+    font-family:
+      "Uber Move",
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-weight: 400; /* Ensure minimum font weight to prevent blurry text */
+    line-height: 1.45;
+  }
+
+  /* Ensure no thin font weights cause blurry text */
+  * {
+    font-weight: 400;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+    letter-spacing: inherit;
+  }
+
+  ::placeholder {
+    opacity: 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-bold,
+  .font-semibold,
+  .font-medium {
+    font-weight: var(--font-weight-bold, 600) !important;
+  }
+}
+
+@layer utilities {
+  /* Dashboard Specific Typography */
+  .text-dashboard-title {
+    font-size: 25px; /* Figma Spec */
+    font-weight: 700; /* Figma Spec */
+    line-height: 30px; /* Figma Spec */
+    color: rgba(var(--title), 1);
+  }
+
+  .text-dashboard-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(var(--subtitle), 0.5); /* Figma Spec */
+  }
+
+  /* Layout Helper */
+  .sidebar-container {
+    width: var(--sidebar-width);
+    height: 100vh;
+    border-right: 1px solid rgb(var(--border));
+    background: rgb(var(--bg-sidebar));
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+
+  .main-content {
+    margin-left: var(--sidebar-width);
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  /* Card Consistency */
+  .premium-card {
+    background: rgb(var(--bg-card));
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(var(--border), 0.5);
+  }
+
+  /* Active Sidebar State (The blue highlight in your image) */
+  .nav-item-active {
+    background-color: rgb(var(--primary) / 1);
+    color: white !important;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ──────────────────────────────────────────
+     Auth Utility Classes
+  ────────────────────────────────────────── */
+  .auth-heading {
+    font-family: "Uber Move", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    color: rgb(var(--primary) / 1);
+  }
+
+  .auth-subtitle {
+    font-family: "Uber Move", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.65;
+     color: rgb(var(--primary) / 1);
+  }
+
+  .auth-label {
+    font-family: "Uber Move", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgb(var(--primary) / 1);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .auth-input {
+    width: 100%;
+    height: 48px;
+    background: rgba(var(--input), 1);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0 1rem;
+    font-size: 14px;
+    font-family: "Uber Move", sans-serif;
+    color: rgba(var(--title), 1);
+    outline: none;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .auth-input:focus {
+    box-shadow: 0 0 0 2px rgb(var(--ring) / 0.85);
+  }
+
+  .auth-input::placeholder {
+    color: rgba(var(--subtitle), 0.35);
+  }
+
+  /* applied when error exists via JS */
+  .auth-input-error {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.75);
+  }
+
+  .btn-auth {
+    width: 100%;
+    height: 48px;
+    background: rgb(var(--primary) / 1);
+    color: #fff;
+    font-family: "Uber Move", sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      transform 0.1s ease,
+      opacity 0.2s ease;
+  }
+
+  .btn-auth:hover:not(:disabled) {
+    background: rgba(20, 58, 196, 1);
+  }
+
+  .btn-auth:active:not(:disabled) {
+    transform: scale(0.985);
+  }
+
+  .btn-auth:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .auth-link {
+    color: rgb(var(--primary) / 1);
+    font-family: "Uber Move", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .auth-link:hover {
+    opacity: 0.75;
+  }
+
+  .auth-link:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* OTP individual digit box */
+  .otp-box {
+    width: 52px;
+    height: 56px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: "Uber Move", sans-serif;
+    color: rgba(var(--title), 1);
+    background: rgba(var(--input), 1);
+    border: none;
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: box-shadow 0.18s ease;
+    caret-color: rgb(var(--primary) / 1);
+  }
+
+  .otp-box:focus {
+    box-shadow: 0 0 0 2px rgb(var(--ring) / 0.85);
+  }
+
+  .otp-box-error {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.75);
+  }
+}
