@@ -160,12 +160,24 @@ export default function InquiryViewDialog({
                   Inzendingsinformatie
                 </h3>
                 <Field
-                  label="Datum & tijd"
+                  label="Ontvangen"
                   value={
                     inquiry.createdAt
                       ? fmt.format(new Date(inquiry.createdAt))
                       : "—"
                   }
+                />
+                <Field
+                  label="Geboekt op"
+                  value={
+                    inquiry.bookedDate
+                      ? new Intl.DateTimeFormat("nl-NL").format(new Date(inquiry.bookedDate))
+                      : "—"
+                  }
+                />
+                <Field
+                  label="Geboekt om"
+                  value={inquiry.bookedTime || "—"}
                 />
               </section>
             </div>

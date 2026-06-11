@@ -84,7 +84,11 @@ export default function AanvragenPage() {
       if (debouncedSearch) params.search = debouncedSearch;
       if (serviceFilter !== "all") params.service = serviceFilter;
       const res = await getAllInquiries(params, { signal: controller.signal });
-      dispatch(fetchInquiriesSuccess(res.data.data));
+      const result = res.data?.data ?? res.data;
+      dispatch(fetchInquiriesSuccess({
+        inquiries: result.inquiries ?? result.data ?? [],
+        pagination: result.pagination ?? { total: 0, page: 1, limit: 10 },
+      }));
       initialised.current = true;
     } catch (err) {
       if (err.name === "CanceledError" || err.code === "ERR_CANCELED") return;
@@ -215,12 +219,28 @@ export default function AanvragenPage() {
     },
     {
       key: "createdAt",
-      label: "Datum",
+      label: "Ontvangen",
       cellClassName: "whitespace-nowrap min-w-[100px]",
       render: (row) =>
         row.createdAt
           ? new Intl.DateTimeFormat("nl-NL").format(new Date(row.createdAt))
           : "—",
+    },
+    {
+      key: "bookedDate",
+      label: "Geboekt op",
+      cellClassName: "whitespace-nowrap min-w-[110px]",
+      render: (row) =>
+        row.bookedDate
+          ? new Intl.DateTimeFormat("nl-NL").format(new Date(row.bookedDate))
+          : "—",
+    },
+    {
+      key: "bookedTime",
+      label: "Geboekt om",
+      cellClassName: "whitespace-nowrap min-w-[90px]",
+      render: (row) =>
+        row.bookedTime || "—",
     },
     {
       key: "actions",

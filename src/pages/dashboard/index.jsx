@@ -209,10 +209,24 @@ export default function Dashboard() {
     },
     {
       key: "createdAt",
-      label: "Datum",
+      label: "Ontvangen",
       cellClassName: "whitespace-nowrap min-w-[110px]",
       render: (row) =>
         row.createdAt ? format(new Date(row.createdAt), "dd/MM/yyyy") : "—",
+    },
+    {
+      key: "bookedDate",
+      label: "Geboekt op",
+      cellClassName: "whitespace-nowrap min-w-[110px]",
+      render: (row) =>
+        row.bookedDate ? format(new Date(row.bookedDate), "dd/MM/yyyy") : "—",
+    },
+    {
+      key: "bookedTime",
+      label: "Geboekt om",
+      cellClassName: "whitespace-nowrap min-w-[100px]",
+      render: (row) =>
+        row.bookedTime || "—",
     },
   ];
 
