@@ -2,11 +2,18 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, X, Loader2, Check, ChevronDown } from "lucide-react";
-import { packageSchema, packageDefaultValues } from "@/validations/packageSchema";
+import { packageSchema, packageDefaultValues, PACKAGE_TYPES } from "@/validations/packageSchema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { getServicesDropdown } from "@/api/services/servicesService";
@@ -111,6 +118,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
   const selectedServices = useWatch({ control, name: "services" }) || [];
   const selectedBadges = useWatch({ control, name: "highlightBadge" }) || [];
   const isActive = useWatch({ control, name: "isActive" });
+  const selectedPackageType = useWatch({ control, name: "packageType" });
 
   // Fetch services dropdown on open
   useEffect(() => {
@@ -147,6 +155,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
         features: packageData.features || [],
         highlightBadge: badges,
         isActive: packageData.status === "active",
+        packageType: Array.isArray(packageData.packageType) ? packageData.packageType[0] : packageData.packageType || "loose",
       });
     } else {
       reset(packageDefaultValues);
@@ -182,6 +191,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
       features: data.features,
       highlightBadge: data.highlightBadge,
       status: data.isActive ? "active" : "inactive",
+      packageType: data.packageType,
     });
     if (success) handleClose(false);
   };
@@ -209,26 +219,38 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
 
           <div className="max-h-[75vh] overflow-y-auto px-6 pb-6">
             <div className="rounded-[1.9rem] bg-[#f5f5f5] p-5">
-              <form onSubmit={handleSubmit(submitPackage)} className="space-y-5">
-
+              <form
+                onSubmit={handleSubmit(submitPackage)}
+                className="space-y-5"
+              >
                 {/* Name */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Pakketnaam</Label>
+                  <Label className="text-sm font-semibold text-[#111111]">
+                    Pakketnaam
+                  </Label>
                   <Input
                     placeholder="Voer pakketnaam in"
                     {...register("name")}
                     className={`h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] ${errors.name ? "ring-2 ring-red-500" : ""}`}
                   />
-                  {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                  {errors.name && (
+                    <p className="text-xs text-red-500">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Services multi-select */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Diensten</Label>
+                  <Label className="text-sm font-semibold text-[#111111]">
+                    Diensten
+                  </Label>
                   <MultiSelectDropdown
                     options={serviceOptions}
                     selected={selectedServices}
-                    onChange={(v) => setValue("services", v, { shouldValidate: true })}
+                    onChange={(v) =>
+                      setValue("services", v, { shouldValidate: true })
+                    }
                     placeholder="Selecteer diensten"
                     loading={loadingServices}
                     error={!!errors.services}
@@ -252,7 +274,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                                 setValue(
                                   "services",
                                   selectedServices.filter((v) => v !== id),
-                                  { shouldValidate: true }
+                                  { shouldValidate: true },
                                 )
                               }
                               className="ml-0.5 rounded-full hover:text-primary/70 transition-colors"
@@ -264,12 +286,18 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                       })}
                     </div>
                   )}
-                  {errors.services && <p className="text-xs text-red-500">{errors.services.message}</p>}
+                  {errors.services && (
+                    <p className="text-xs text-red-500">
+                      {errors.services.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Price */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Prijs (EUR)</Label>
+                  <Label className="text-sm font-semibold text-[#111111]">
+                    Prijs (EUR)
+                  </Label>
                   <Input
                     type="number"
                     min={0}
@@ -279,11 +307,39 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                   />
                 </div>
 
+                {/* Package Type */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-[#111111]">
+                    Pakkettype
+                  </Label>
+                  <Select
+                    value={selectedPackageType || "loose"}
+                    onValueChange={(v) =>
+                      setValue("packageType", v, { shouldValidate: true })
+                    }
+                  >
+                    <SelectTrigger className="h-11 w-full rounded-xl border-0 bg-white shadow-none text-[#111111]">
+                      <SelectValue placeholder="Selecteer type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PACKAGE_TYPES.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Features */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold text-[#111111]">Kenmerken</Label>
-                    <span className={`text-xs ${features.length >= MAX_FEATURES ? "text-red-500" : "text-[#9a9a9a]"}`}>
+                    <Label className="text-sm font-semibold text-[#111111]">
+                      Kenmerken
+                    </Label>
+                    <span
+                      className={`text-xs ${features.length >= MAX_FEATURES ? "text-red-500" : "text-[#9a9a9a]"}`}
+                    >
                       {features.length}/{MAX_FEATURES}
                     </span>
                   </div>
@@ -295,19 +351,28 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                       disabled={features.length >= MAX_FEATURES}
                       className="h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] disabled:opacity-50"
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") { e.preventDefault(); handleAddFeature(); }
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddFeature();
+                        }
                       }}
                     />
                     <Button
                       type="button"
                       onClick={handleAddFeature}
-                      disabled={features.length >= MAX_FEATURES || !featureInput.trim()}
+                      disabled={
+                        features.length >= MAX_FEATURES || !featureInput.trim()
+                      }
                       className="h-11 w-11 shrink-0 rounded-xl bg-primary px-0 text-white hover:bg-primary/90 disabled:opacity-40"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                  {errors.features && <p className="text-xs text-red-500">{errors.features.message}</p>}
+                  {errors.features && (
+                    <p className="text-xs text-red-500">
+                      {errors.features.message}
+                    </p>
+                  )}
                   {features.length > 0 && (
                     <div className="flex flex-wrap gap-2 pt-1">
                       {features.map((feature, i) => (
@@ -331,20 +396,26 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
 
                 {/* Highlight badges — checkbox pills */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Uitgelicht label</Label>
+                  <Label className="text-sm font-semibold text-[#111111]">
+                    Uitgelicht label
+                  </Label>
                   <div className="flex flex-wrap gap-2">
                     {/* "Geen badge" deselect-all pill */}
                     <button
                       type="button"
-                      onClick={() => setValue("highlightBadge", [], { shouldValidate: true })}
+                      onClick={() =>
+                        setValue("highlightBadge", [], { shouldValidate: true })
+                      }
                       className={cn(
                         "inline-flex h-9 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors",
                         selectedBadges.length === 0
                           ? "border-primary bg-primary text-white"
-                          : "border-[#e0e0e0] bg-white text-[#555] hover:border-primary/40"
+                          : "border-[#e0e0e0] bg-white text-[#555] hover:border-primary/40",
                       )}
                     >
-                      {selectedBadges.length === 0 && <Check className="h-3 w-3" strokeWidth={3} />}
+                      {selectedBadges.length === 0 && (
+                        <Check className="h-3 w-3" strokeWidth={3} />
+                      )}
                       Geen badge
                     </button>
 
@@ -358,16 +429,20 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                             const next = active
                               ? selectedBadges.filter((v) => v !== opt.value)
                               : [...selectedBadges, opt.value];
-                            setValue("highlightBadge", next, { shouldValidate: true });
+                            setValue("highlightBadge", next, {
+                              shouldValidate: true,
+                            });
                           }}
                           className={cn(
                             "inline-flex h-9 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors",
                             active
                               ? "border-primary bg-primary text-white"
-                              : "border-[#e0e0e0] bg-white text-[#555] hover:border-primary/40"
+                              : "border-[#e0e0e0] bg-white text-[#555] hover:border-primary/40",
                           )}
                         >
-                          {active && <Check className="h-3 w-3" strokeWidth={3} />}
+                          {active && (
+                            <Check className="h-3 w-3" strokeWidth={3} />
+                          )}
                           {opt.label}
                         </button>
                       );
@@ -382,7 +457,12 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     checked={isActive}
                     onCheckedChange={(v) => setValue("isActive", v)}
                   />
-                  <Label htmlFor="pkg-status" className="text-sm font-semibold text-primary">Actief</Label>
+                  <Label
+                    htmlFor="pkg-status"
+                    className="text-sm font-semibold text-primary"
+                  >
+                    Actief
+                  </Label>
                 </div>
 
                 <div className="flex items-center justify-end gap-3 pt-1">
@@ -400,7 +480,11 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     disabled={submitting}
                     className="h-12 min-w-[104px] rounded-[1.05rem] bg-primary px-8 text-white hover:bg-primary/90"
                   >
-                    {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Opslaan"}
+                    {submitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Opslaan"
+                    )}
                   </Button>
                 </div>
               </form>

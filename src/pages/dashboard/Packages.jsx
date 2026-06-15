@@ -38,6 +38,7 @@ import {
 } from "@/api/services/packagesService";
 import { getServicesDropdown } from "@/api/services/servicesService";
 import { useToast } from "@/hooks/use-toast";
+import { PACKAGE_TYPES } from "@/validations/packageSchema";
 
 const BADGE_LABELS = {
   most_popular: "Meest populair",
@@ -61,6 +62,7 @@ export default function Packages() {
   const [search, setSearch] = useState("");
   const [serviceFilter, setServiceFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [packageTypeFilter, setPackageTypeFilter] = useState("all");
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounce(search);
 
@@ -98,6 +100,7 @@ export default function Packages() {
       if (debouncedSearch) params.search = debouncedSearch;
       if (serviceFilter !== "all") params.service = serviceFilter;
       if (statusFilter !== "all") params.status = statusFilter;
+      if (packageTypeFilter !== "all") params.packageType = packageTypeFilter;
       const res = await getAllPackages(params, { signal: controller.signal });
       dispatch(fetchPackagesSuccess(res.data.data));
       initialised.current = true;
@@ -111,7 +114,7 @@ export default function Packages() {
     } finally {
       setIsFiltering(false);
     }
-  }, [page, debouncedSearch, serviceFilter, statusFilter]);
+  }, [page, debouncedSearch, serviceFilter, statusFilter, packageTypeFilter]);
 
   useEffect(() => {
     fetchPackages();
@@ -119,28 +122,30 @@ export default function Packages() {
   }, [fetchPackages]);
 
   // Reset page on filter change
-  const prevFilter = useRef({ search: "", service: "all", status: "all" });
+  const prevFilter = useRef({ search: "", service: "all", status: "all", packageType: "all" });
   useEffect(() => {
     const prev = prevFilter.current;
     if (
       prev.search !== debouncedSearch ||
       prev.service !== serviceFilter ||
-      prev.status !== statusFilter
+      prev.status !== statusFilter ||
+      prev.packageType !== packageTypeFilter
     ) {
       prevFilter.current = {
         search: debouncedSearch,
         service: serviceFilter,
         status: statusFilter,
+        packageType: packageTypeFilter,
       };
       setPage(1);
     }
-  }, [debouncedSearch, serviceFilter, statusFilter]);
+  }, [debouncedSearch, serviceFilter, statusFilter, packageTypeFilter]);
 
   // Show filtering spinner immediately on input change
   useEffect(() => {
     if (!initialised.current) return;
     setIsFiltering(true);
-  }, [search, serviceFilter, statusFilter]);
+  }, [search, serviceFilter, statusFilter, packageTypeFilter]);
 
   // View
   const handleView = async (row) => {
@@ -308,6 +313,20 @@ export default function Packages() {
       ),
     },
     {
+      key: "packageType",
+      label: "Type",
+      cellClassName: "min-w-[100px]",
+      render: (row) => {
+        const val = row.packageType;
+        const t = PACKAGE_TYPES.find((p) => p.value === val);
+        return (
+          <span className="inline-flex rounded-full bg-primary/10 px-3 py-0.5 text-xs font-medium text-primary">
+            {t?.label || "—"}
+          </span>
+        );
+      },
+    },
+    {
       key: "highlight",
       label: "Highlight Badge",
       cellClassName: "min-w-[110px]",
@@ -449,6 +468,27 @@ export default function Packages() {
             </SelectItem>
             <SelectItem value="active">Actief</SelectItem>
             <SelectItem value="inactive">Inactief</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={packageTypeFilter} onValueChange={setPackageTypeFilter}>
+          <SelectTrigger
+            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[160px] ${packageTypeFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+          >
+            <SelectValue placeholder="Alle types" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem
+              value="all"
+              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+            >
+              Alle types
+            </SelectItem>
+            {PACKAGE_TYPES.map((t) => (
+              <SelectItem key={t.value} value={t.value}>
+                {t.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

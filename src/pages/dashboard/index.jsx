@@ -28,6 +28,7 @@ import totalServicesIcon from "@/assets/icons/totalServices.svg";
 import totalPackagesIcon from "@/assets/icons/totalPackages.svg";
 import totalInquiriesIcon from "@/assets/icons/totalInquires.svg";
 import portfolioItemsIcon from "@/assets/icons/portfolioItems.svg";
+import moment from "moment/moment";
 
 function useDebounce(value, delay = 450) {
   const [debounced, setDebounced] = useState(value);
@@ -219,14 +220,15 @@ export default function Dashboard() {
       label: "Geboekt op",
       cellClassName: "whitespace-nowrap min-w-[110px]",
       render: (row) =>
-        row.bookedDate ? format(new Date(row.bookedDate), "dd/MM/yyyy") : "—",
+        row.bookedDate
+          ? moment.utc(row.bookedDate.split("T")[0]).format("DD/MM/YYYY")
+          : "—",
     },
     {
       key: "bookedTime",
       label: "Geboekt om",
       cellClassName: "whitespace-nowrap min-w-[100px]",
-      render: (row) =>
-        row.bookedTime || "—",
+      render: (row) => row.bookedTime || "—",
     },
   ];
 

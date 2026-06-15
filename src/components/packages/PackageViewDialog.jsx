@@ -1,6 +1,7 @@
 import { CalendarDays, Loader2, CheckCircle2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { PACKAGE_TYPES } from "@/validations/packageSchema";
 
 const BADGE_LABELS = {
   most_popular: "Meest populair",
@@ -74,7 +75,7 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
               </div>
 
               {/* Detail pills — price + services */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div className="rounded-xl bg-[#f5f5f5] px-4 py-3">
                   <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">Prijs</div>
                   <div className="text-sm font-medium text-[#232323]">
@@ -85,6 +86,16 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
                   <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">Kenmerken</div>
                   <div className="text-sm font-medium text-[#232323]">
                     {Array.isArray(pkg.features) ? pkg.features.length : 0}
+                  </div>
+                </div>
+                <div className="rounded-xl bg-[#f5f5f5] px-4 py-3">
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">Type</div>
+                  <div className="text-sm font-medium text-[#232323]">
+                    {(() => {
+                      const val = pkg.packageType;
+                      const t = PACKAGE_TYPES.find((p) => p.value === val);
+                      return t?.label || "—";
+                    })()}
                   </div>
                 </div>
               </div>
