@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import { useForm, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2, X, Loader2, Check, ChevronDown } from "lucide-react";
 import { packageSchema, packageDefaultValues, PACKAGE_TYPES } from "@/validations/packageSchema";
@@ -108,6 +108,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
   const [featureInput, setFeatureInput] = useState("");
   const [servicesDropdown, setServicesDropdown] = useState([]);
   const [loadingServices, setLoadingServices] = useState(false);
+  const initialized = useRef(false);
 
   const { register, handleSubmit, setValue, reset, control, formState: { errors } } = useForm({
     resolver: zodResolver(packageSchema),
@@ -118,7 +119,6 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
   const selectedServices = useWatch({ control, name: "services" }) || [];
   const selectedBadges = useWatch({ control, name: "highlightBadge" }) || [];
   const isActive = useWatch({ control, name: "isActive" });
-  const selectedPackageType = useWatch({ control, name: "packageType" });
 
   // Fetch services dropdown on open
   useEffect(() => {
@@ -133,9 +133,15 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
       .finally(() => setLoadingServices(false));
   }, [open]);
 
-  // Populate form on edit
+  // Populate form on edit (only once per modal open)
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      initialized.current = false;
+      return;
+    }
+    if (initialized.current) return;
+    initialized.current = true;
+
     if (packageData) {
       // services can be array of objects or array of ids
       const serviceIds = (packageData.services || []).map((s) =>
@@ -161,12 +167,13 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
       reset(packageDefaultValues);
     }
     setFeatureInput("");
-  }, [packageData, open, reset]);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleClose = (isOpen) => {
     if (submitting) return;
     onOpenChange(isOpen);
     if (!isOpen) {
+      initialized.current = false;
       reset(packageDefaultValues);
       setFeatureInput("");
     }
@@ -312,23 +319,27 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                   <Label className="text-sm font-semibold text-[#111111]">
                     Pakkettype
                   </Label>
-                  <Select
-                    value={selectedPackageType || "loose"}
-                    onValueChange={(v) =>
-                      setValue("packageType", v, { shouldValidate: true })
-                    }
-                  >
-                    <SelectTrigger className="h-11 w-full rounded-xl border-0 bg-white shadow-none text-[#111111]">
-                      <SelectValue placeholder="Selecteer type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {PACKAGE_TYPES.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="packageType"
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="h-11 w-full rounded-xl border-0 bg-white shadow-none text-[#111111]">
+                          <SelectValue placeholder="Selecteer type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {PACKAGE_TYPES.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
 
                 {/* Features */}
