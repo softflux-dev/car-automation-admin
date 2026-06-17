@@ -7,6 +7,7 @@ const initialState = {
   loading: {
     fetch: false,
     delete: {},
+    addingToCalendar: {},
   },
   error: null,
 };
@@ -45,6 +46,18 @@ const inquiriesSlice = createSlice({
     deleteInquiryFailure(state, action) {
       state.loading.delete[action.payload] = false;
     },
+
+    setInquiryCalendarStatus(state, action) {
+      const { inquiryId, isAddedToCalendar } = action.payload;
+      const idx = state.inquiries.findIndex((i) => i._id === inquiryId);
+      if (idx !== -1) {
+        state.inquiries[idx].isAddedToCalendar = isAddedToCalendar;
+      }
+    },
+    setAddingToCalendarLoading(state, action) {
+      const { inquiryId, loading } = action.payload;
+      state.loading.addingToCalendar[inquiryId] = loading;
+    },
   },
 });
 
@@ -56,6 +69,8 @@ export const {
   deleteInquiryStart,
   deleteInquirySuccess,
   deleteInquiryFailure,
+  setInquiryCalendarStatus,
+  setAddingToCalendarLoading,
 } = inquiriesSlice.actions;
 
 export default inquiriesSlice.reducer;

@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Search, Eye, Loader2 } from "lucide-react";
+import { Search, Eye, CalendarPlus, CheckCircle2, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -13,6 +14,7 @@ import {
 import DataTable from "@/components/table/DataTable";
 import InquiryViewDialog from "@/components/aanvragen/InquiryViewDialog";
 import DeleteDialog from "@/components/shared/DeleteDialog";
+import CreateEventModal from "@/modules/calendar/components/CreateEventModal";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   fetchInquiriesStart,
@@ -23,6 +25,7 @@ import {
   deleteInquirySuccess,
   deleteInquiryFailure,
 } from "@/store/slices/inquiriesSlice";
+import { createCalendarEventFromInquiry } from "@/modules/calendar/redux/calendarThunks";
 import {
   getAllInquiries,
   getInquiryById,
@@ -49,6 +52,10 @@ export default function AanvragenPage() {
     (s) => s.inquiries,
   );
 
+  const calendarLoading = useAppSelector(
+    (s) => s.inquiries.loading.addingToCalendar,
+  );
+
   const [search, setSearch] = useState("");
   const [serviceFilter, setServiceFilter] = useState("all");
   const [page, setPage] = useState(1);
@@ -61,6 +68,9 @@ export default function AanvragenPage() {
   const [viewingInquiry, setViewingInquiry] = useState(null);
   const [viewLoading, setViewLoading] = useState(false);
   const [deletingInquiry, setDeletingInquiry] = useState(null);
+
+  const [calendarInquiry, setCalendarInquiry] = useState(null);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
 
   // ── Fetch services dropdown once ──
   useEffect(() => {
@@ -138,6 +148,54 @@ export default function AanvragenPage() {
     } finally {
       setViewLoading(false);
     }
+  };
+
+  // ── Calendar ──
+  const handleOpenCalendarModal = (row) => {
+    if (row.isAddedToCalendar || calendarLoading?.[row._id]) return;
+    setCalendarInquiry(row);
+    setIsCalendarModalOpen(true);
+  };
+
+  const handleCalendarSubmit = useCallback(
+    (payload) => {
+      dispatch(createCalendarEventFromInquiry({ inquiry: calendarInquiry, ...payload }));
+      setIsCalendarModalOpen(false);
+      setCalendarInquiry(null);
+    },
+    [dispatch, calendarInquiry],
+  );
+
+  const buildPrefilledSlot = (inquiry) => {
+    if (!inquiry) return null;
+    if (inquiry.bookedDate) {
+      const datePart = inquiry.bookedDate.split("T")[0];
+      const timePart = inquiry.bookedTime || "09:00";
+      const start = new Date(`${datePart}T${timePart}:00`);
+      const end = new Date(start.getTime() + 60 * 60 * 1000);
+      return { start, end };
+    }
+    const now = new Date();
+    const end = new Date(now.getTime() + 60 * 60 * 1000);
+    return { start: now, end };
+  };
+
+  const buildPrefilledTitle = (inquiry) => {
+    if (!inquiry) return "";
+    const servicesStr = Array.isArray(inquiry.services)
+      ? inquiry.services.map((s) => s.name || s).join(", ")
+      : "";
+    return `Aanvraag: ${inquiry.name}${servicesStr ? ` - ${servicesStr}` : ""}`;
+  };
+
+  const buildPrefilledDescription = (inquiry) => {
+    if (!inquiry) return "";
+    const packagesStr = Array.isArray(inquiry.packages)
+      ? inquiry.packages.map((p) => p.name || p).join(", ")
+      : "";
+    return [inquiry.message || "", packagesStr && `Pakket(ten): ${packagesStr}`]
+      .filter(Boolean)
+      .join("\n\n");
   };
 
   // ── Delete ──
@@ -243,6 +301,41 @@ export default function AanvragenPage() {
         row.bookedTime || "—",
     },
     {
+      key: "isAddedToCalendar",
+      label: "Kalender",
+      headClassName: "text-center",
+      cellClassName: "whitespace-nowrap text-center",
+      render: (row) => {
+        const isAdding = calendarLoading?.[row._id];
+
+        if (row.isAddedToCalendar) {
+          return (
+            <Badge className="border-0 bg-emerald-100 text-emerald-700 text-xs font-medium px-3 py-1">
+              <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+              Toegevoegd
+            </Badge>
+          );
+        }
+
+        return (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isAdding}
+            onClick={() => handleOpenCalendarModal(row)}
+            className="h-8 text-xs gap-1.5 whitespace-nowrap border-primary/30 text-primary hover:bg-primary/5"
+          >
+            {isAdding ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <CalendarPlus className="h-3.5 w-3.5" />
+            )}
+            {isAdding ? "Bezig..." : "Toevoegen"}
+          </Button>
+        );
+      },
+    },
+    {
       key: "actions",
       label: "Acties",
       cellClassName: "min-w-[90px]",
@@ -345,6 +438,8 @@ export default function AanvragenPage() {
         onOpenChange={(open) => !open && setViewingInquiry(null)}
         inquiry={viewingInquiry}
         loading={viewLoading}
+        onAddToCalendar={() => viewingInquiry && handleOpenCalendarModal(viewingInquiry)}
+        calendarLoading={!!(viewingInquiry?._id && calendarLoading?.[viewingInquiry._id])}
       />
 
       <DeleteDialog
@@ -356,6 +451,19 @@ export default function AanvragenPage() {
         confirmText="Verwijderen"
         cancelText="Annuleren"
         loading={!!loading.delete[deletingInquiry?._id]}
+      />
+
+      <CreateEventModal
+        open={isCalendarModalOpen}
+        onClose={() => {
+          setIsCalendarModalOpen(false);
+          setCalendarInquiry(null);
+        }}
+        onSubmit={handleCalendarSubmit}
+        prefilledSlot={buildPrefilledSlot(calendarInquiry)}
+        prefilledTitle={buildPrefilledTitle(calendarInquiry)}
+        prefilledDescription={buildPrefilledDescription(calendarInquiry)}
+        loading={!!(calendarInquiry?._id && calendarLoading?.[calendarInquiry._id])}
       />
     </div>
   );

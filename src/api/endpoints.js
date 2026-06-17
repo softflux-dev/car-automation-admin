@@ -72,4 +72,8 @@ export const ENDPOINTS = {
     getAdminNotifications: "admin/notifications",
     markAsRead: "admin/notifications/:id/read",
   },
+  googleCalendar: {
+    getAllEvents: "admin/calendar/get",
+    createEvents: "admin/calendar/create",
+  },
 };

@@ -6,14 +6,15 @@ import packagesIcon from "@/assets/icons/packages.svg";
 import inquiriesIcon from "@/assets/icons/inquiries.svg";
 import portfolioIcon from "@/assets/icons/portfolio.svg";
 import settingsIcon from "@/assets/icons/settings.svg";
-
+ 
 import { cn } from "@/lib/utils";
-
+ 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: dashboardIcon },
   { name: "Diensten", href: "/services", icon: servicesIcon },
   { name: "Pakketten", href: "/packages", icon: packagesIcon },
   { name: "Aanvragen", href: "/inquiries", icon: inquiriesIcon },
+  { name: "Kalender", href: "/calendar", icon: inquiriesIcon },
   { name: "Portfolio", href: "/portfolio", icon: portfolioIcon },
   { name: "Instellingen", href: "/settings", icon: settingsIcon },
 ];

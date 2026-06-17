@@ -1,6 +1,7 @@
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, CalendarPlus, CheckCircle2 } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const fmt = new Intl.DateTimeFormat("nl-NL", {
   day: "numeric",
@@ -15,6 +16,8 @@ export default function InquiryViewDialog({
   onOpenChange,
   inquiry,
   loading = false,
+  onAddToCalendar,
+  calendarLoading = false,
 }) {
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
@@ -153,6 +156,52 @@ export default function InquiryViewDialog({
                   </p>
                 </section>
               )}
+
+              {/* Kalender Actie */}
+              <section className="rounded-3xl border border-border/60 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex flex-col gap-1">
+                  <h3 className="text-base font-semibold text-[var(--title)]">
+                    Kalender
+                  </h3>
+                  <p className="text-sm text-[var(--text-muted)]">
+                    Google Agenda synchronisatie
+                  </p>
+                </div>
+
+                {inquiry.isAddedToCalendar ? (
+                  <div className="flex items-center gap-3 rounded-2xl bg-emerald-50 border border-emerald-200 px-4 py-3">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium text-emerald-800">
+                        Toegevoegd aan agenda
+                      </p>
+                      <p className="text-xs text-emerald-600">
+                        Deze afspraak is al ingepland in Google Agenda
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm text-[var(--text-muted)]">
+                      Voeg deze aanvraag toe aan uw Google Agenda om de afspraak te plannen.
+                    </p>
+                    <Button
+                      onClick={() => onAddToCalendar?.(inquiry)}
+                      disabled={calendarLoading}
+                      className="w-full sm:w-auto gap-2"
+                    >
+                      {calendarLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <CalendarPlus className="h-4 w-4" />
+                      )}
+                      {calendarLoading
+                        ? "Bezig met toevoegen..."
+                        : "Voeg toe aan Google Agenda"}
+                    </Button>
+                  </div>
+                )}
+              </section>
 
               {/* Inzendingsinformatie */}
               <section className="rounded-xl border border-border/60 bg-white p-4 space-y-2 shadow-sm">

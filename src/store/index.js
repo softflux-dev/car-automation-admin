@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
+import calendarReducer from '../modules/calendar/redux/calendarSlice';
 import authReducer from "./slices/authSlice";
-import uiReducer from "./slices/uiSlice";
 import servicesReducer from "./slices/servicesSlice";
 import certificatesReducer from "./slices/certificatesSlice";
 import inquiriesReducer from "./slices/inquiriesSlice";
@@ -10,6 +10,7 @@ import portfolioReducer from "./slices/portfolioSlice";
 import packagesReducer from "./slices/packagesSlice";
 import settingsReducer from "./slices/settingsSlice";
 import notificationsReducer from "./slices/notificationsSlice";
+import uiReducer from "./slices/uiSlice"
 
 // Custom storage wrapper to avoid Vite/Rollup CJS import issues with redux-persist
 const storage = {
@@ -39,6 +40,7 @@ const appReducer = combineReducers({
   portfolio: portfolioReducer,
   packages: packagesReducer,
   settings: settingsReducer,
+  calendar: calendarReducer,
   notifications: notificationsReducer,
 }); 
 

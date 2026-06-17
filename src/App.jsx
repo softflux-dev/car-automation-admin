@@ -13,6 +13,7 @@ import ServicesPage from "./pages/Services";
 import AanvragenPage from "./pages/Aanvragen";
 import PortfolioPage from "./pages/Portfolio/index";
 import InstellingenPage from "./pages/Instellingen";
+import CalendarPage from "./modules/calendar/pages/CalendarPage";
 import { Toaster } from "./components/ui/toaster";
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/inquiries" element={<AanvragenPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
             <Route path="/settings" element={<InstellingenPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
           </Route>
         </Route>
 
