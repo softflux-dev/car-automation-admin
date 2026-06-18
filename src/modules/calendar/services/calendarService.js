@@ -17,3 +17,14 @@ export const createEvent = (payload) =>
   Api.post(ENDPOINTS.googleCalendar.createEvents, payload).then(
     (res) => res.data
   );
+
+export const updateEvent = (id, payload) =>
+  Api.put(
+    ENDPOINTS.googleCalendar.updateEvent.replace(":eventId", id),
+    payload
+  ).then((res) => res.data);
+
+export const deleteEvent = (id) =>
+  Api.delete(
+    ENDPOINTS.googleCalendar.deleteEvent.replace(":eventId", id)
+  ).then((res) => res.data);

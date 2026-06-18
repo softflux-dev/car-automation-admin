@@ -8,6 +8,7 @@ export default {
     extend: {
       colors: {
         primary: 'rgb(var(--primary) / <alpha-value>)',
+        'primary-foreground': 'rgb(var(--primary-foreground) / <alpha-value>)',
         title: 'rgb(var(--title) / <alpha-value>)',
         subtitle: 'rgb(var(--subtitle) / 0.5)', // Locked to your figma spec
         secondary: 'rgb(var(--secondary) / <alpha-value>)',

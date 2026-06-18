@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Search, Eye, CalendarPlus, CheckCircle2, Loader2 } from "lucide-react";
+import { Search, Eye, CalendarPlus, CheckCircle2, Loader2, X, RotateCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,8 @@ import {
   deleteInquiryStart,
   deleteInquirySuccess,
   deleteInquiryFailure,
+  setInquiryCalendarStatus,
+  setAddingToCalendarLoading,
 } from "@/store/slices/inquiriesSlice";
 import { createCalendarEventFromInquiry } from "@/modules/calendar/redux/calendarThunks";
 import {
@@ -71,6 +73,7 @@ export default function AanvragenPage() {
 
   const [calendarInquiry, setCalendarInquiry] = useState(null);
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+  const [calendarError, setCalendarError] = useState(null);
 
   // ── Fetch services dropdown once ──
   useEffect(() => {
@@ -131,6 +134,13 @@ export default function AanvragenPage() {
     setIsFiltering(true);
   }, [search, serviceFilter]);
 
+  const hasActiveFilters = search || serviceFilter !== "all";
+
+  const clearFilters = () => {
+    setSearch("");
+    setServiceFilter("all");
+  };
+
   // ── View ──
   const handleView = async (row) => {
     const id = row._id;
@@ -154,16 +164,45 @@ export default function AanvragenPage() {
   const handleOpenCalendarModal = (row) => {
     if (row.isAddedToCalendar || calendarLoading?.[row._id]) return;
     setCalendarInquiry(row);
+    setCalendarError(null);
     setIsCalendarModalOpen(true);
+  };
+
+  const handleRetryCalendar = (row) => {
+    setCalendarError(null);
+    handleOpenCalendarModal(row);
   };
 
   const handleCalendarSubmit = useCallback(
     (payload) => {
-      dispatch(createCalendarEventFromInquiry({ inquiry: calendarInquiry, ...payload }));
+      const inquiry = calendarInquiry;
+      if (!inquiry) return;
+
+      dispatch(setAddingToCalendarLoading({ inquiryId: inquiry._id, loading: true }));
+      dispatch(setInquiryCalendarStatus({ inquiryId: inquiry._id, isAddedToCalendar: true }));
       setIsCalendarModalOpen(false);
       setCalendarInquiry(null);
+      setCalendarError(null);
+
+      dispatch(createCalendarEventFromInquiry({ inquiry, ...payload })).then((res) => {
+        if (res.meta.requestStatus === "rejected") {
+          dispatch(setInquiryCalendarStatus({ inquiryId: inquiry._id, isAddedToCalendar: false }));
+          setCalendarError(inquiry._id);
+          toast({
+            title: "Fout",
+            description: res.payload?.message || "Fout bij toevoegen aan agenda",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Succes",
+            description: "Toegevoegd aan agenda",
+          });
+        }
+        dispatch(setAddingToCalendarLoading({ inquiryId: inquiry._id, loading: false }));
+      });
     },
-    [dispatch, calendarInquiry],
+    [calendarInquiry, dispatch, toast],
   );
 
   const buildPrefilledSlot = (inquiry) => {
@@ -175,9 +214,7 @@ export default function AanvragenPage() {
       const end = new Date(start.getTime() + 60 * 60 * 1000);
       return { start, end };
     }
-    const now = new Date();
-    const end = new Date(now.getTime() + 60 * 60 * 1000);
-    return { start: now, end };
+    return null;
   };
 
   const buildPrefilledTitle = (inquiry) => {
@@ -307,6 +344,7 @@ export default function AanvragenPage() {
       cellClassName: "whitespace-nowrap text-center",
       render: (row) => {
         const isAdding = calendarLoading?.[row._id];
+        const hasError = calendarError === row._id;
 
         if (row.isAddedToCalendar) {
           return (
@@ -314,6 +352,20 @@ export default function AanvragenPage() {
               <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
               Toegevoegd
             </Badge>
+          );
+        }
+
+        if (hasError) {
+          return (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleRetryCalendar(row)}
+              className="h-8 text-xs gap-1.5 whitespace-nowrap border-amber-300 text-amber-700 hover:bg-amber-50"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              Opnieuw
+            </Button>
           );
         }
 
@@ -358,9 +410,12 @@ export default function AanvragenPage() {
     },
   ];
 
+  const paginationText = pagination.total > 0
+    ? `${(pagination.page - 1) * pagination.limit + 1}–${Math.min(pagination.page * pagination.limit, pagination.total)} van ${pagination.total} resultaten`
+    : "";
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-[var(--title)]">
           Aanvraagbeheer
@@ -370,7 +425,6 @@ export default function AanvragenPage() {
         </p>
       </div>
 
-      {/* Filter bar */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <div className="relative flex-1">
           <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
@@ -413,7 +467,25 @@ export default function AanvragenPage() {
             ))}
           </SelectContent>
         </Select>
+
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearFilters}
+            className="h-11 gap-1.5 text-muted-foreground hover:text-foreground shrink-0"
+          >
+            <X className="h-4 w-4" />
+            Wis filters
+          </Button>
+        )}
       </div>
+
+      {paginationText && (
+        <p className="text-sm text-muted-foreground -mt-2">
+          {paginationText}
+        </p>
+      )}
 
       <DataTable
         columns={columns}
@@ -438,8 +510,9 @@ export default function AanvragenPage() {
         onOpenChange={(open) => !open && setViewingInquiry(null)}
         inquiry={viewingInquiry}
         loading={viewLoading}
-        onAddToCalendar={() => viewingInquiry && handleOpenCalendarModal(viewingInquiry)}
+        onAddToCalendar={() => viewingInquiry && !viewingInquiry.isAddedToCalendar && handleOpenCalendarModal(viewingInquiry)}
         calendarLoading={!!(viewingInquiry?._id && calendarLoading?.[viewingInquiry._id])}
+        calendarError={calendarError === viewingInquiry?._id}
       />
 
       <DeleteDialog
@@ -465,6 +538,17 @@ export default function AanvragenPage() {
         prefilledDescription={buildPrefilledDescription(calendarInquiry)}
         loading={!!(calendarInquiry?._id && calendarLoading?.[calendarInquiry._id])}
       />
+
+      {calendarError && (
+        <div className="fixed bottom-4 right-4 z-50 rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3 shadow-lg max-w-sm">
+          <p className="text-sm font-medium text-amber-800">
+            Toevoegen aan agenda mislukt
+          </p>
+          <p className="text-xs text-amber-600 mt-0.5">
+            Klik op "Opnieuw" bij de betreffende aanvraag om het nogmaals te proberen.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

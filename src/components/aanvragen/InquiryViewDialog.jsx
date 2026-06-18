@@ -1,4 +1,5 @@
-import { X, Loader2, CalendarPlus, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { X, Loader2, CalendarPlus, CheckCircle2, RotateCcw, ImageOff } from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,29 @@ const fmt = new Intl.DateTimeFormat("nl-NL", {
   minute: "2-digit",
 });
 
+function FieldSkeleton() {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="h-3 w-16 rounded bg-muted animate-pulse" />
+      <div className="h-4 w-32 rounded bg-muted animate-pulse" />
+    </div>
+  );
+}
+
+function SectionSkeleton() {
+  return (
+    <div className="rounded-3xl border border-border/60 bg-white p-5 shadow-sm space-y-3">
+      <div className="h-5 w-36 rounded bg-muted animate-pulse" />
+      <div className="h-3 w-48 rounded bg-muted animate-pulse" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FieldSkeleton />
+        <FieldSkeleton />
+        <FieldSkeleton />
+      </div>
+    </div>
+  );
+}
+
 export default function InquiryViewDialog({
   open,
   onOpenChange,
@@ -18,7 +42,14 @@ export default function InquiryViewDialog({
   loading = false,
   onAddToCalendar,
   calendarLoading = false,
+  calendarError = false,
 }) {
+  const [imgErrors, setImgErrors] = useState({});
+
+  const handleImgError = (id) => {
+    setImgErrors((prev) => ({ ...prev, [id]: true }));
+  };
+
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
@@ -39,8 +70,10 @@ export default function InquiryViewDialog({
           </div>
 
           {loading ? (
-            <div className="flex h-40 items-center justify-center">
-              <Loader2 className="h-7 w-7 animate-spin text-primary" />
+            <div className="space-y-5">
+              <SectionSkeleton />
+              <SectionSkeleton />
+              <SectionSkeleton />
             </div>
           ) : !inquiry ? null : (
             <div className="space-y-5">
@@ -56,8 +89,8 @@ export default function InquiryViewDialog({
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Naam" value={inquiry.name} />
-                  <Field label="E-mail" value={inquiry.email} />
-                  <Field label="Telefoon" value={inquiry.phone} />
+                  <Field label="E-mail" value={inquiry.email} isEmail />
+                  <Field label="Telefoon" value={inquiry.phone} isPhone />
                 </div>
               </section>
 
@@ -80,12 +113,17 @@ export default function InquiryViewDialog({
                           className="flex items-center justify-between gap-3 rounded-3xl border border-border/60 bg-[rgb(var(--input))] p-3 shadow-sm"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            {svc.image?.url && (
+                            {svc.image?.url && !imgErrors[svc._id] ? (
                               <img
                                 src={svc.image.url}
                                 alt={svc.name}
                                 className="h-10 w-10 rounded-2xl object-cover shrink-0"
+                                onError={() => handleImgError(svc._id)}
                               />
+                            ) : (
+                              <div className="h-10 w-10 rounded-2xl bg-muted flex items-center justify-center shrink-0">
+                                <ImageOff className="h-4 w-4 text-muted-foreground" />
+                              </div>
                             )}
                             <span className="text-sm font-medium text-[var(--title)] truncate">
                               {svc.name}
@@ -164,7 +202,7 @@ export default function InquiryViewDialog({
                     Kalender
                   </h3>
                   <p className="text-sm text-[var(--text-muted)]">
-                    Google Agenda synchronisatie
+                    Agenda synchronisatie
                   </p>
                 </div>
 
@@ -176,28 +214,33 @@ export default function InquiryViewDialog({
                         Toegevoegd aan agenda
                       </p>
                       <p className="text-xs text-emerald-600">
-                        Deze afspraak is al ingepland in Google Agenda
+                        Deze afspraak is al ingepland
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-3">
                     <p className="text-sm text-[var(--text-muted)]">
-                      Voeg deze aanvraag toe aan uw Google Agenda om de afspraak te plannen.
+                      Voeg deze aanvraag toe aan uw agenda om de afspraak te plannen.
                     </p>
                     <Button
                       onClick={() => onAddToCalendar?.(inquiry)}
                       disabled={calendarLoading}
                       className="w-full sm:w-auto gap-2"
+                      variant={calendarError ? "outline" : "default"}
                     >
                       {calendarLoading ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : calendarError ? (
+                        <RotateCcw className="h-4 w-4" />
                       ) : (
                         <CalendarPlus className="h-4 w-4" />
                       )}
                       {calendarLoading
                         ? "Bezig met toevoegen..."
-                        : "Voeg toe aan Google Agenda"}
+                        : calendarError
+                          ? "Opnieuw proberen"
+                          : "Voeg toe aan agenda"}
                     </Button>
                   </div>
                 )}
@@ -237,13 +280,42 @@ export default function InquiryViewDialog({
   );
 }
 
-function Field({ label, value }) {
+function Field({ label, value, isEmail, isPhone }) {
+  const content = value || "—";
+  const className = "text-sm font-semibold text-[var(--title)]";
+
+  if (isEmail && value) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs text-[var(--text-muted)]">{label}</span>
+        <a
+          href={`mailto:${value}`}
+          className={`${className} hover:text-primary transition-colors underline underline-offset-2 decoration-muted-foreground/30`}
+        >
+          {content}
+        </a>
+      </div>
+    );
+  }
+
+  if (isPhone && value) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs text-[var(--text-muted)]">{label}</span>
+        <a
+          href={`tel:${value}`}
+          className={`${className} hover:text-primary transition-colors`}
+        >
+          {content}
+        </a>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-0.5">
       <span className="text-xs text-[var(--text-muted)]">{label}</span>
-      <span className="text-sm font-semibold text-[var(--title)]">
-        {value || "—"}
-      </span>
+      <span className={className}>{content}</span>
     </div>
   );
 }

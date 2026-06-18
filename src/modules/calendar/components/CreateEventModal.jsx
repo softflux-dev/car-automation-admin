@@ -1,7 +1,7 @@
-import { useState, useEffect, memo } from "react";
-import { format } from "date-fns";
+import { useState, useEffect, useCallback, memo } from "react";
+import { format, addMinutes, isPast as isDatePast } from "date-fns";
 import { nl } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Clock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,13 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
+const DURATION_PRESETS = [
+  { label: "30 min", minutes: 30 },
+  { label: "1 uur", minutes: 60 },
+  { label: "2 uur", minutes: 120 },
+  { label: "3 uur", minutes: 180 },
+];
+
 const CreateEventModal = memo(function CreateEventModal({
   open,
   onClose,
@@ -29,6 +36,7 @@ const CreateEventModal = memo(function CreateEventModal({
   prefilledTitle,
   prefilledDescription,
   loading,
+  isEditing = false,
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -39,15 +47,17 @@ const CreateEventModal = memo(function CreateEventModal({
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (prefilledSlot) {
-      setStartDate(prefilledSlot.start);
-      setEndDate(prefilledSlot.end);
-      setStartTime(format(prefilledSlot.start, "HH:mm"));
-      setEndTime(format(prefilledSlot.end, "HH:mm"));
+    if (open) {
+      if (prefilledSlot) {
+        setStartDate(prefilledSlot.start);
+        setEndDate(prefilledSlot.end);
+        setStartTime(format(prefilledSlot.start, "HH:mm"));
+        setEndTime(format(prefilledSlot.end, "HH:mm"));
+      }
+      if (prefilledTitle !== undefined) setTitle(prefilledTitle);
+      if (prefilledDescription !== undefined) setDescription(prefilledDescription);
     }
-    if (prefilledTitle !== undefined) setTitle(prefilledTitle);
-    if (prefilledDescription !== undefined) setDescription(prefilledDescription);
-  }, [prefilledSlot, prefilledTitle, prefilledDescription]);
+  }, [open]);
 
   const resetForm = () => {
     setTitle("");
@@ -63,6 +73,17 @@ const CreateEventModal = memo(function CreateEventModal({
     resetForm();
     onClose();
   };
+
+  const applyDuration = useCallback((minutes) => {
+    if (startDate && startTime) {
+      const [sh, sm] = startTime.split(":").map(Number);
+      const s = new Date(startDate);
+      s.setHours(sh, sm, 0, 0);
+      const e = addMinutes(s, minutes);
+      setEndDate(e);
+      setEndTime(format(e, "HH:mm"));
+    }
+  }, [startDate, startTime]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -81,6 +102,11 @@ const CreateEventModal = memo(function CreateEventModal({
       s.setHours(sh, sm, 0, 0);
       const e = new Date(endDate);
       e.setHours(eh, em, 0, 0);
+
+      if (isDatePast(s)) {
+        newErrors.startTime = "Startdatum of -tijd ligt in het verleden";
+      }
+
       if (e <= s) {
         newErrors.endTime = "Eindtijd moet na starttijd liggen";
       }
@@ -92,11 +118,18 @@ const CreateEventModal = memo(function CreateEventModal({
     }
 
     const fmtDate = (d) => format(d, "yyyy-MM-dd");
+    const toTz = (d, t) => {
+      const offset = -d.getTimezoneOffset();
+      const sign = offset >= 0 ? "+" : "-";
+      const pad = (n) => n.toString().padStart(2, "0");
+      const tz = `${sign}${pad(Math.floor(Math.abs(offset) / 60))}:${pad(Math.abs(offset) % 60)}`;
+      return `${fmtDate(d)}T${t}:00${tz}`;
+    };
     const payload = {
       summary: title.trim(),
       description: description.trim(),
-      startDateTime: `${fmtDate(startDate)}T${startTime}:00`,
-      endDateTime: `${fmtDate(endDate)}T${endTime}:00`,
+      startDateTime: toTz(startDate, startTime),
+      endDateTime: toTz(endDate, endTime),
     };
 
     onSubmit(payload);
@@ -106,9 +139,11 @@ const CreateEventModal = memo(function CreateEventModal({
     <Dialog open={open} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Evenement aanmaken</DialogTitle>
+          <DialogTitle>{isEditing ? "Evenement bewerken" : "Evenement aanmaken"}</DialogTitle>
           <DialogDescription>
-            Vul de gegevens in om een nieuwe afspraak te maken.
+            {isEditing
+              ? "Pas de gegevens van het evenement aan."
+              : "Vul de gegevens in om een nieuwe afspraak te maken."}
           </DialogDescription>
         </DialogHeader>
 
@@ -122,7 +157,11 @@ const CreateEventModal = memo(function CreateEventModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Titel van het evenement"
-              className={errors.title ? "border-destructive" : ""}
+              className={cn(
+                "bg-[rgb(var(--input))] border-0 focus-visible:ring-2 focus-visible:ring-[rgb(var(--ring))]",
+                errors.title && "ring-2 ring-destructive"
+              )}
+              maxLength={100}
             />
             {errors.title && (
               <p className="text-xs text-destructive">{errors.title}</p>
@@ -137,6 +176,8 @@ const CreateEventModal = memo(function CreateEventModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Beschrijving (optioneel)"
               rows={3}
+              maxLength={500}
+              className="bg-[rgb(var(--input))] border-0 focus-visible:ring-2 focus-visible:ring-[rgb(var(--ring))] resize-none"
             />
           </div>
 
@@ -148,9 +189,9 @@ const CreateEventModal = memo(function CreateEventModal({
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal bg-[rgb(var(--input))] border-0 hover:bg-muted/80",
                       !startDate && "text-muted-foreground",
-                      errors.startDate && "border-destructive"
+                      errors.startDate && "ring-2 ring-destructive"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
@@ -174,7 +215,10 @@ const CreateEventModal = memo(function CreateEventModal({
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className={cn(errors.startTime && "border-destructive")}
+                className={cn(
+                  "bg-[rgb(var(--input))] border-0 focus-visible:ring-2 focus-visible:ring-[rgb(var(--ring))]",
+                  errors.startTime && "ring-2 ring-destructive"
+                )}
               />
               {(errors.startDate || errors.startTime) && (
                 <p className="text-xs text-destructive">
@@ -190,9 +234,9 @@ const CreateEventModal = memo(function CreateEventModal({
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal bg-[rgb(var(--input))] border-0 hover:bg-muted/80",
                       !endDate && "text-muted-foreground",
-                      errors.endDate && "border-destructive"
+                      errors.endDate && "ring-2 ring-destructive"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
@@ -216,7 +260,10 @@ const CreateEventModal = memo(function CreateEventModal({
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
-                className={cn(errors.endTime && "border-destructive")}
+                className={cn(
+                  "bg-[rgb(var(--input))] border-0 focus-visible:ring-2 focus-visible:ring-[rgb(var(--ring))]",
+                  errors.endTime && "ring-2 ring-destructive"
+                )}
               />
               {(errors.endDate || errors.endTime) && (
                 <p className="text-xs text-destructive">
@@ -226,12 +273,44 @@ const CreateEventModal = memo(function CreateEventModal({
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={handleClose}>
+          {startDate && startTime && (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-muted-foreground flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" />
+                Snelle duur
+              </Label>
+              <div className="flex flex-wrap gap-2">
+                {DURATION_PRESETS.map((preset) => (
+                  <Button
+                    key={preset.minutes}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => applyDuration(preset.minutes)}
+                    className="text-xs bg-[rgb(var(--input))] border-0 hover:bg-muted/80"
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-3 pt-3 border-t border-border/50">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              className="px-5"
+            >
               Annuleren
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Bezig..." : "Opslaan"}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="px-6 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-100 disabled:cursor-wait"
+            >
+              {loading ? "Bezig..." : isEditing ? "Bijwerken" : "Opslaan"}
             </Button>
           </div>
         </form>

@@ -75,5 +75,7 @@ export const ENDPOINTS = {
   googleCalendar: {
     getAllEvents: "admin/calendar/get",
     createEvents: "admin/calendar/create",
+    updateEvent: "admin/calendar/update/:eventId",
+    deleteEvent: "admin/calendar/delete/:eventId",
   },
 };

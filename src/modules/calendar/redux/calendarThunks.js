@@ -1,10 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllEvents, createEvent } from "../services/calendarService";
-import {
-  setInquiryCalendarStatus,
-  setAddingToCalendarLoading,
-} from "@/store/slices/inquiriesSlice";
-import { toast } from "@/hooks/use-toast";
+import { getAllEvents, createEvent, updateEvent, deleteEvent } from "../services/calendarService";
 
 export const fetchAllEvents = createAsyncThunk(
   "calendar/fetchAllEvents",
@@ -13,14 +8,7 @@ export const fetchAllEvents = createAsyncThunk(
       const data = await getAllEvents();
       return data;
     } catch (error) {
-      toast({
-        title: "Fout",
-        description:
-          error?.response?.data?.message ||
-          "Fout bij het laden van evenementen",
-        variant: "destructive",
-      });
-      return rejectWithValue(error.response?.data);
+      return rejectWithValue(error.response?.data || { message: "Fout bij het laden van evenementen" });
     }
   }
 );
@@ -30,54 +18,46 @@ export const createCalendarEvent = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const data = await createEvent(payload);
-      toast({
-        title: "Succes",
-        description: "Evenement succesvol aangemaakt",
-      });
       return data;
     } catch (error) {
-      toast({
-        title: "Fout",
-        description:
-          error?.response?.data?.message ||
-          "Fout bij het aanmaken van evenement",
-        variant: "destructive",
-      });
-      return rejectWithValue(error.response?.data);
+      return rejectWithValue(error.response?.data || { message: "Fout bij het aanmaken van evenement" });
+    }
+  }
+);
+
+export const updateCalendarEvent = createAsyncThunk(
+  "calendar/updateCalendarEvent",
+  async ({ id, ...payload }, { rejectWithValue }) => {
+    try {
+      const data = await updateEvent(id, payload);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Fout bij het bijwerken van evenement" });
+    }
+  }
+);
+
+export const deleteCalendarEvent = createAsyncThunk(
+  "calendar/deleteCalendarEvent",
+  async (id, { rejectWithValue }) => {
+    try {
+      await deleteEvent(id);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Fout bij het verwijderen van evenement" });
     }
   }
 );
 
 export const createCalendarEventFromInquiry = createAsyncThunk(
   "calendar/createCalendarEventFromInquiry",
-  async ({ inquiry, summary, description, startDateTime, endDateTime }, { dispatch, rejectWithValue }) => {
-    const inquiryId = inquiry._id;
-    dispatch(setAddingToCalendarLoading({ inquiryId, loading: true }));
-
+  async ({ inquiry, summary, description, startDateTime, endDateTime }, { rejectWithValue }) => {
     try {
-      const payload = { inquiryId, summary, description, startDateTime, endDateTime };
-
-      await createEvent(payload);
-
-      dispatch(setInquiryCalendarStatus({ inquiryId, isAddedToCalendar: true }));
-
-      toast({
-        title: "Succes",
-        description: "Toegevoegd aan Google Agenda",
-      });
-
-      return { inquiryId };
+      const payload = { inquiryId: inquiry._id, summary, description, startDateTime, endDateTime };
+      const data = await createEvent(payload);
+      return { inquiryId: inquiry._id, data };
     } catch (error) {
-      toast({
-        title: "Fout",
-        description:
-          error?.response?.data?.message ||
-          "Fout bij toevoegen aan agenda",
-        variant: "destructive",
-      });
-      return rejectWithValue(error.response?.data);
-    } finally {
-      dispatch(setAddingToCalendarLoading({ inquiryId, loading: false }));
+      return rejectWithValue(error.response?.data || { message: "Fout bij toevoegen aan agenda" });
     }
   }
 );
