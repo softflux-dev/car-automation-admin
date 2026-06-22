@@ -43,7 +43,12 @@ const CalendarPage = () => {
   const [dismissedError, setDismissedError] = useState(false);
 
   const editPrefilledSlot = useMemo(
-    () => (editingEvent ? { start: new Date(editingEvent.start), end: new Date(editingEvent.end) } : null),
+    () => (editingEvent ? {
+      start: new Date(editingEvent.start),
+      end: new Date(editingEvent.end),
+      startStr: editingEvent.start,
+      endStr: editingEvent.end,
+    } : null),
     [editingEvent]
   );
 
@@ -165,9 +170,9 @@ const CalendarPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-0">
       <div className="flex items-center justify-between">
-        <h1 className="text-dashboard-title">Kalender</h1>
+        <h1 className="text-dashboard-title tracking-tight">Kalender</h1>
       </div>
 
       {error && !dismissedError && (
@@ -198,7 +203,7 @@ const CalendarPage = () => {
       {eventsLoading && events.length === 0 ? (
         <div className="premium-card flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-3">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-primary border-t-transparent" />
             <p className="text-sm text-muted-foreground">Evenementen laden...</p>
           </div>
         </div>
@@ -237,7 +242,7 @@ const CalendarPage = () => {
           setEditingEvent(null);
           dispatch(openCreateModal());
         }}
-        className="lg:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary/90 transition-colors z-40"
+        className="lg:hidden fixed bottom-6 right-6 h-14 w-14 rounded-full bg-primary text-white shadow-[var(--shadow-event-hover)] flex items-center justify-center hover:shadow-[0_8px_24px_rgba(29,78,216,0.35)] hover:scale-105 active:scale-95 transition-all z-40"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

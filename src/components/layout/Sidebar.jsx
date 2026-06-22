@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import brandLogo from "@/assets/icons/brandLogo.svg";
 import dashboardIcon from "@/assets/icons/dashbaord.svg";
 import servicesIcon from "@/assets/icons/services.svg";
@@ -22,12 +22,19 @@ const navItems = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex h-[72px] px-6 items-center justify-center">
-        <img src={brandLogo} alt="Brand logo" className="h-10 lg:h-10 " />
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-[var(--radius-sm)]"
+          aria-label="Naar dashboard"
+        >
+          <img src={brandLogo} alt="Brand logo" className="h-10 lg:h-10" />
+        </button>
       </div>
 
       {/* Navigation */}

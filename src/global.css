@@ -35,7 +35,10 @@
 @layer base {
   :root {
     /* --- Colors: Brand & Foundation --- */
-    --primary: 29 78 216; /* #1D4ED8 - Figma Primary (space-separated for rgb() slash syntax) */
+    --primary: 29 78 216;
+    --primary-mid: 37 99 235;
+    --primary-glow: rgba(29, 78, 216, 0.12);
+    --primary-subtle: rgba(29, 78, 216, 0.06);
     --primary-foreground: 255 255 255;
     --secondary: 220 10% 94%; /* Light gray for secondary elements */
     --secondary-foreground: 220 10% 20%; /* Dark gray for secondary text */
@@ -68,19 +71,36 @@
 
     /* --- Colors: Accents/Borders --- */
     --border: 229, 231, 235; /* Gray 200 */
+    --border-subtle: rgba(17, 17, 17, 0.06);
+    --border-medium: rgba(17, 17, 17, 0.10);
     --input: 243, 244, 246; /* Gray 100 */
     --ring: 29 78 216; /* Focus ring - space-sep for slash usage */
+
+    /* --- Grid & Calendar Specific --- */
+    --bg-grid-line: rgba(17, 17, 17, 0.04);
+    --bg-hour-alt: rgba(29, 78, 216, 0.018);
+    --bg-past: rgba(245, 245, 245, 0.6);
+    --bg-today-col: rgba(29, 78, 216, 0.025);
+
+    /* --- Today Indicator --- */
+    --today-line: rgb(239, 68, 68);
+    --today-glow: rgba(239, 68, 68, 0.25);
 
     /* --- Layout & Spacing --- */
     --sidebar-width: 260px; /* Figma Sidebar Width */
     --header-height: 72px;
-    --radius: 12px; /* Premium rounded look */
+    --radius: 14px; /* Premium rounded look */
     --radius-sm: 8px;
+    --radius-xs: 5px;
 
     /* --- Shadows (Premium Enterprise Elevation) --- */
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-card:
       0 4px 6px -1px rgb(0 0 0 / 0.02), 0 2px 4px -2px rgb(0 0 0 / 0.02);
+    --shadow-event: 0 2px 8px rgba(29, 78, 216, 0.15), 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-event-hover: 0 6px 20px rgba(29, 78, 216, 0.22), 0 2px 8px rgba(0,0,0,0.1);
+    --shadow-float: 0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-modal: 0 24px 64px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
   }
 
   body {
@@ -165,7 +185,7 @@
   .premium-card {
     background: rgb(var(--bg-card));
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 0.5rem;
     box-shadow: var(--shadow-card);
     border: 1px solid rgba(var(--border), 0.5);
   }
