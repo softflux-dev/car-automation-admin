@@ -158,6 +158,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
         name: packageData.name || "",
         services: serviceIds,
         price: packageData.price != null ? String(packageData.price) : "",
+        duration: packageData.duration != null ? String(packageData.duration) : "",
         features: packageData.features || [],
         highlightBadge: badges,
         isActive: packageData.status === "active",
@@ -195,6 +196,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
       name: data.name,
       services: data.services,
       price: data.price ? Number(data.price) : 0,
+      duration: Number(data.duration),
       features: data.features,
       highlightBadge: data.highlightBadge,
       status: data.isActive ? "active" : "inactive",
@@ -312,6 +314,29 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     {...register("price")}
                     className="h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3]"
                   />
+                </div>
+
+                {/* Duration */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-[#111111]">
+                    Duur (minuten)
+                  </Label>
+                  <p className="text-xs text-[#9a9a9a]">
+                    Hoe lang dit pakket duurt om te voltooien.
+                  </p>
+                  <Input
+                    type="number"
+                    min={15}
+                    step={15}
+                    placeholder="Duur in minuten"
+                    {...register("duration")}
+                    className={`h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] ${errors.duration ? "ring-2 ring-red-500" : ""}`}
+                  />
+                  {errors.duration && (
+                    <p className="text-xs text-red-500">
+                      {errors.duration.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Package Type */}
