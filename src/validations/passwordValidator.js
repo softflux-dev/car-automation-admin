@@ -7,7 +7,7 @@ import { z } from "zod";
 export const strongPassword = z
   .string()
   .min(1, "Wachtwoord is verplicht")
-  .min(8, "Wachtwoord moet minimaal 8 tekens bevatten")
+  .min(6, "Wachtwoord moet minimaal 8 tekens bevatten")
   .regex(/[A-Z]/, "Wachtwoord moet minimaal één hoofdletter bevatten")
   .regex(/[a-z]/, "Wachtwoord moet minimaal één kleine letter bevatten")
   .regex(/[0-9]/, "Wachtwoord moet minimaal één cijfer bevatten")

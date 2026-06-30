@@ -41,11 +41,12 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
             </div>
           ) : !pkg ? null : (
             <div className="space-y-5">
-
               {/* Title + status + badges */}
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-xl font-bold text-[#111111] sm:text-2xl">{pkg.name}</h3>
+                  <h3 className="text-xl font-bold text-[#111111] sm:text-2xl">
+                    {pkg.name}
+                  </h3>
                   {date && (
                     <div className="mt-1.5 flex items-center gap-1.5 text-sm text-[#7b7b7b]">
                       <CalendarDays className="h-3.5 w-3.5 shrink-0" />
@@ -77,25 +78,39 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
               {/* Detail pills — price + services */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="rounded-xl bg-[#f5f5f5] px-4 py-3">
-                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">Prijs</div>
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">
+                    Prijs
+                  </div>
                   <div className="text-sm font-medium text-[#232323]">
                     {pkg.price != null ? `€ ${pkg.price}` : "—"}
                   </div>
                 </div>
                 <div className="rounded-xl bg-[#f5f5f5] px-4 py-3">
-                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">Kenmerken</div>
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">
+                    Kenmerken
+                  </div>
                   <div className="text-sm font-medium text-[#232323]">
                     {Array.isArray(pkg.features) ? pkg.features.length : 0}
                   </div>
                 </div>
                 <div className="rounded-xl bg-[#f5f5f5] px-4 py-3">
-                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">Type</div>
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">
+                    Type
+                  </div>
                   <div className="text-sm font-medium text-[#232323]">
                     {(() => {
                       const val = pkg.packageType;
                       const t = PACKAGE_TYPES.find((p) => p.value === val);
                       return t?.label || "—";
                     })()}
+                  </div>
+                </div>{" "}
+                <div className="rounded-xl bg-[#f5f5f5] px-4 py-3">
+                  <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">
+                    Duur
+                  </div>
+                  <div className="text-sm font-medium text-[#232323]">
+                    {pkg.duration != null ? `${pkg.duration} minuten` : "—"}
                   </div>
                 </div>
               </div>
@@ -104,7 +119,10 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
               {services.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-[#111111]">
-                    Diensten <span className="font-normal text-[#9a9a9a]">({services.length})</span>
+                    Diensten{" "}
+                    <span className="font-normal text-[#9a9a9a]">
+                      ({services.length})
+                    </span>
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {services.map((s) => (
@@ -123,11 +141,17 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
               {Array.isArray(pkg.features) && pkg.features.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-sm font-semibold text-[#111111]">
-                    Kenmerken <span className="font-normal text-[#9a9a9a]">({pkg.features.length})</span>
+                    Kenmerken{" "}
+                    <span className="font-normal text-[#9a9a9a]">
+                      ({pkg.features.length})
+                    </span>
                   </p>
                   <div className="rounded-2xl bg-[#f5f5f5] px-4 py-3 space-y-2">
                     {pkg.features.map((f, i) => (
-                      <div key={i} className="flex items-center gap-2 text-sm text-[#3e3e3e]">
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 text-sm text-[#3e3e3e]"
+                      >
                         <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-primary" />
                         {f}
                       </div>
@@ -135,7 +159,6 @@ export default function PackageViewDialog({ open, onOpenChange, pkg, loading = f
                   </div>
                 </div>
               )}
-
             </div>
           )}
         </div>
