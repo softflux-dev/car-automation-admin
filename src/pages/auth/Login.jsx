@@ -68,8 +68,8 @@ export default function Login() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Login failed",
-        description: getApiMessage(error, "Invalid credentials"),
+        title: "Inloggen mislukt",
+        description: getApiMessage(error, "Ongeldige inloggegevens"),
       });
     }
   };
@@ -120,7 +120,7 @@ export default function Login() {
 
         {/* Submit */}
         <button type="submit" className="btn-auth" disabled={isSubmitting}>
-          {isSubmitting ? "Aanmelden…" : "Login"}
+          {isSubmitting ? "Aanmelden…" : "Inloggen"}
         </button>
       </form>
     </div>

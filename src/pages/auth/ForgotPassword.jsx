@@ -21,14 +21,14 @@ export default function ForgotPassword() {
     try {
       const payload = await dispatch(forgotPassword(data.email)).unwrap();
       toast({
-        title: "Success",
+        title: "Succes",
         description: getApiMessage(payload, "Verification code sent"),
       });
       navigate("/verify-code", { state: { email: data.email } });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Request failed",
+        title: "Verificatiecode verzenden mislukt",
         description: getApiMessage(error, "Failed to send verification code"),
       });
     }
@@ -42,24 +42,24 @@ export default function ForgotPassword() {
         className="auth-link mb-6 inline-flex items-center gap-1.5 text-sm"
       >
         <ArrowLeft size={15} />
-        Back to Login
+        Terug naar inloggen
       </Link>
 
       {/* Heading */}
-      <h1 className="auth-heading mt-4 mb-2">Forgot Password</h1>
+      <h1 className="auth-heading mt-4 mb-2">Wachtwoord vergeten</h1>
       <p className="auth-subtitle mb-8">
-        Enter your registered email address and we'll send you a reset code.
+        Voer je geregistreerde e-mailadres in en we sturen je een reset code.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
           <label htmlFor="email" className="auth-label">
-            Email Address
+            E-mailadres
           </label>
           <input
             id="email"
             type="email"
-            placeholder="Enter your email"
+            placeholder="Voer uw e-mailadres in"
             className={`auth-input ${errors.email ? "auth-input-error" : ""}`}
             {...register("email")}
           />
@@ -69,7 +69,7 @@ export default function ForgotPassword() {
         </div>
 
         <button type="submit" className="btn-auth" disabled={isSubmitting}>
-          {isSubmitting ? "Sending…" : "Send Code"}
+          {isSubmitting ? "Verzenden…" : "Code Verzenden"}
         </button>
       </form>
     </div>
