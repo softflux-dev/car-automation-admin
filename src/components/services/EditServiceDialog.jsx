@@ -159,7 +159,7 @@ export default function AddServiceDialog({
             <div className="space-y-2">
               <Label>Uitgelichte afbeelding</Label>
               {imagePreview ? (
-                <div className="group relative overflow-hidden rounded-2xl bg-[#ececec]">
+                <div className="group relative overflow-hidden rounded-2xl bg-muted">
                   <img
                     src={imagePreview}
                     alt="Preview"

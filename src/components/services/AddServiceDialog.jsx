@@ -115,7 +115,7 @@ export default function AddServiceDialog({
     <DialogPrimitive.Root open={open} onOpenChange={handleClose}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[680px] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[2.25rem] bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
+        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[680px] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[var(--radius)] bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
           <DialogPrimitive.Close
             disabled={isLoading}
             className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white opacity-90 transition-opacity hover:opacity-100 disabled:opacity-40"
@@ -126,20 +126,20 @@ export default function AddServiceDialog({
 
           {/* Header */}
           <div className="px-6 pb-4 pt-6 pr-16">
-            <h2 className="text-[1.8rem] font-bold text-[#111111]">
+            <h2 className="text-[1.8rem] font-bold text-title">
               {service ? "Dienst bewerken" : "Nieuwe dienst toevoegen"}
             </h2>
           </div>
 
           {/* Scrollable body */}
           <div className="max-h-[75vh] overflow-y-auto px-6 pb-6">
-            <div className="rounded-[1.9rem] bg-[#f5f5f5] p-5">
+            <div className="rounded-[var(--radius)] bg-muted p-5">
               <form
                 onSubmit={handleSubmit(handleFormSubmit)}
                 className="space-y-5"
               >
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Dienstnaam
                   </Label>
                   <Input
@@ -148,7 +148,7 @@ export default function AddServiceDialog({
                     {...register("name", {
                       required: "Dienstnaam is verplicht",
                     })}
-                    className={`h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] ${errors.name ? "ring-2 ring-red-500" : ""}`}
+                    className={`h-11 rounded-xl border border-border bg-white text-title placeholder:text-subtitle ${errors.name ? "ring-2 ring-red-500" : ""}`}
                   />
                   {errors.name && (
                     <p className="text-xs text-red-500">
@@ -158,7 +158,7 @@ export default function AddServiceDialog({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Beschrijving
                   </Label>
                   <TextareaInput
@@ -167,16 +167,16 @@ export default function AddServiceDialog({
                     placeholder="Voer servicebeschrijving in..."
                     register={register}
                     rows={4}
-                    className="w-full resize-none rounded-2xl border-0 bg-white px-4 py-3 text-sm text-[#111111] outline-none placeholder:text-[#b3b3b3]"
+                    className="w-full resize-none rounded-xl border border-border bg-white px-4 py-3 text-sm text-title placeholder:text-subtitle"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Uitgelichte afbeelding
                   </Label>
                   {imagePreview ? (
-                    <div className="group relative overflow-hidden rounded-2xl bg-[#ececec]">
+                    <div className="group relative overflow-hidden rounded-2xl bg-muted">
                       <img
                         src={imagePreview}
                         alt="Preview"
@@ -198,12 +198,12 @@ export default function AddServiceDialog({
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#d7d7d7] bg-white px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-white px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ececec] text-[#8d8d8d]">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-subtitle">
                         <Upload className="h-5 w-5" />
                       </div>
-                      <span className="text-sm text-[#b3b3b3]">
+                      <span className="text-sm text-subtitle">
                         Klik om een afbeelding te uploaden
                       </span>
                     </button>
@@ -229,7 +229,7 @@ export default function AddServiceDialog({
                     </p>
                   )}
                   {uploading && (
-                    <p className="flex items-center gap-1.5 text-xs text-[#6b7280]">
+                    <p className="flex items-center gap-1.5 text-xs text-subtitle">
                       <Loader2 className="h-3 w-3 animate-spin" /> Afbeelding
                       uploaden...
                     </p>
@@ -253,14 +253,14 @@ export default function AddServiceDialog({
                     variant="outline"
                     onClick={() => handleClose(false)}
                     disabled={isLoading}
-                    className="h-12 min-w-[104px] rounded-[1.05rem] border-primary bg-white px-8 text-primary hover:bg-primary/5"
+                    className="h-12 min-w-[104px] rounded-[var(--radius-xs)] border-primary bg-white px-8 text-primary hover:bg-primary/5"
                   >
                     Annuleren
                   </Button>
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="h-12 min-w-[104px] rounded-[1.05rem] bg-primary px-8 text-white hover:bg-primary/90"
+                    className="h-12 min-w-[104px] rounded-[var(--radius-xs)] bg-primary px-8 text-white hover:bg-primary/90"
                   >
                     {isLoading ? (
                       <Loader2 className="h-4 w-4 animate-spin" />

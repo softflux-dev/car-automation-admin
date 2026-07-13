@@ -25,7 +25,7 @@ export default function SearchInput({
         <button
           type="button"
           onClick={onClear}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-gray-700 transition-colors"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-title transition-colors"
           aria-label="Zoekopdracht wissen"
         >
           <X size={14} />

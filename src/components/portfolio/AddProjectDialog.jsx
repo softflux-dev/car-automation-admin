@@ -54,16 +54,16 @@ function ServicesMultiSelect({
           )}
         >
           {loading ? (
-            <span className="flex items-center gap-2 text-[#b3b3b3]">
+            <span className="flex items-center gap-2 text-subtitle">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               Laden...
             </span>
           ) : selectedLabels.length > 0 ? (
-            <span className="truncate text-left text-[#111111]">{selectedLabels.join(", ")}</span>
+            <span className="truncate text-left text-title">{selectedLabels.join(", ")}</span>
           ) : (
-            <span className="text-[#b3b3b3]">{placeholder}</span>
+            <span className="text-subtitle">{placeholder}</span>
           )}
-          <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#9a9a9a] transition-transform", open && "rotate-180")} />
+          <ChevronDown className={cn("h-4 w-4 shrink-0 text-subtitle transition-transform", open && "rotate-180")} />
         </button>
       </PopoverPrimitive.Trigger>
 
@@ -74,7 +74,7 @@ function ServicesMultiSelect({
           className="z-[200] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-xl border border-border/60 bg-white shadow-lg"
         >
           {options.length === 0 ? (
-            <p className="px-3 py-3 text-sm text-[#9a9a9a]">Geen diensten beschikbaar</p>
+            <p className="px-3 py-3 text-sm text-subtitle">Geen diensten beschikbaar</p>
           ) : (
             <div className="max-h-52 overflow-y-auto py-1">
               {options.map((option) => {
@@ -84,12 +84,12 @@ function ServicesMultiSelect({
                     key={option.value}
                     type="button"
                     onClick={() => toggleSelection(option.value)}
-                    className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-[#111111] transition-colors hover:bg-[#f5f5f5]"
+                    className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-title transition-colors hover:bg-muted"
                   >
                     <span
                       className={cn(
                         "flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors",
-                        checked ? "border-primary bg-primary" : "border-[#d0d0d0] bg-white"
+                        checked ? "border-primary bg-primary" : "border-border bg-white"
                       )}
                     >
                       {checked && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
@@ -294,7 +294,7 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
     <DialogPrimitive.Root open={open} onOpenChange={handleClose}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[680px] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[2.25rem] bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
+        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[680px] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[var(--radius)] bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
           <DialogPrimitive.Close
             disabled={isLoading}
             className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white opacity-90 transition-opacity hover:opacity-100 disabled:opacity-40"
@@ -304,39 +304,39 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
           </DialogPrimitive.Close>
 
           <div className="px-6 pb-4 pt-6 pr-16">
-            <h2 className="text-[1.8rem] font-bold text-[#111111]">
+            <h2 className="text-[1.8rem] font-bold text-title">
               {project?._id ? "Project bewerken" : "Nieuw project toevoegen"}
             </h2>
           </div>
 
           <div className="max-h-[75vh] overflow-y-auto px-6 pb-6">
-            <div className="rounded-[1.9rem] bg-[#f5f5f5] p-5">
+            <div className="rounded-[var(--radius)] bg-muted p-5">
               <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
                 {/* Title */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Projectnaam</Label>
+                  <Label className="text-sm font-semibold text-title">Projectnaam</Label>
                   <Input
                     placeholder="Voer projectnaam in"
                     {...register("title", { required: "Projectnaam is verplicht" })}
-                    className={`h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] ${errors.title ? "ring-2 ring-red-500" : ""}`}
+                    className={`h-11 rounded-xl border-0 bg-white text-title shadow-none placeholder:text-subtitle ${errors.title ? "ring-2 ring-red-500" : ""}`}
                   />
                   {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
                 </div>
 
                 {/* Description */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Beschrijving</Label>
+                  <Label className="text-sm font-semibold text-title">Beschrijving</Label>
                   <TextareaInput
                     name="description"
                     placeholder="Beschrijf het project..."
                     register={register}
                     rows={4}
-                    className="w-full resize-none rounded-2xl border-0 bg-white px-4 py-3 text-sm text-[#111111] outline-none placeholder:text-[#b3b3b3]"
+                    className="w-full resize-none rounded-2xl border-0 bg-white px-4 py-3 text-sm text-title outline-none placeholder:text-subtitle"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Diensten</Label>
+                  <Label className="text-sm font-semibold text-title">Diensten</Label>
                   <ServicesMultiSelect
                     options={serviceOptions}
                     selected={selectedServices}
@@ -379,14 +379,14 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
 
                 {/* Images */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Afbeeldingen <span className="text-red-500">*</span>
                   </Label>
 
                   {imagePreviews.length > 0 && (
                     <div className="grid grid-cols-3 gap-2">
                       {imagePreviews.map((preview, i) => (
-                        <div key={i} className="group relative aspect-square overflow-hidden rounded-xl bg-[#ececec]">
+                        <div key={i} className="group relative aspect-square overflow-hidden rounded-xl bg-muted">
                           <img src={preview.url} alt="" className="h-full w-full object-cover" />
                           <button
                             type="button"
@@ -403,17 +403,17 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
                   <button
                     type="button"
                     onClick={() => imageInputRef.current?.click()}
-                    className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#d7d7d7] bg-white px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
+                    className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-white px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ececec] text-[#8d8d8d]">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-subtitle">
                       <Upload className="h-5 w-5" />
                     </div>
-                    <span className="text-sm text-[#b3b3b3]">Klik om afbeeldingen te uploaden (JPG, PNG, WebP)</span>
+                    <span className="text-sm text-subtitle">Klik om afbeeldingen te uploaden (JPG, PNG, WebP)</span>
                   </button>
                   <input ref={imageInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageSelect} />
 
                   {uploadingImages && (
-                    <p className="flex items-center gap-1.5 text-xs text-[#6b7280]">
+                    <p className="flex items-center gap-1.5 text-xs text-subtitle">
                       <Loader2 className="h-3 w-3 animate-spin" /> Afbeeldingen uploaden...
                     </p>
                   )}
@@ -421,7 +421,7 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
 
                 {/* Video upload */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">Video uploaden (optioneel)</Label>
+                  <Label className="text-sm font-semibold text-title">Video uploaden (optioneel)</Label>
 
                   {videoPreview ? (
                     <div className="group relative overflow-hidden rounded-2xl bg-black">
@@ -441,18 +441,18 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
                     <button
                       type="button"
                       onClick={() => videoInputRef.current?.click()}
-                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#d7d7d7] bg-white px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-white px-4 py-6 text-center transition-colors hover:border-primary/40 hover:bg-primary/5"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ececec] text-[#8d8d8d]">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-subtitle">
                         <Play className="h-5 w-5" />
                       </div>
-                      <span className="text-sm text-[#b3b3b3]">Klik om een video te uploaden (MP4, MOV, WebM)</span>
+                      <span className="text-sm text-subtitle">Klik om een video te uploaden (MP4, MOV, WebM)</span>
                     </button>
                   )}
                   <input ref={videoInputRef} type="file" accept="video/*" className="hidden" onChange={handleVideoSelect} />
 
                   {uploadingVideo && (
-                    <p className="flex items-center gap-1.5 text-xs text-[#6b7280]">
+                    <p className="flex items-center gap-1.5 text-xs text-subtitle">
                       <Loader2 className="h-3 w-3 animate-spin" /> Video uploaden...
                     </p>
                   )}
@@ -460,13 +460,13 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
 
                 {/* Video URL */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     <span className="flex items-center gap-1.5"><Link className="h-3.5 w-3.5" /> Video URL (optioneel)</span>
                   </Label>
                   <Input
                     placeholder="bijv. https://youtube.com/watch?v=..."
                     {...register("videoUrl")}
-                    className="h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3]"
+                    className="h-11 rounded-xl border-0 bg-white text-title shadow-none placeholder:text-subtitle"
                   />
                 </div>
 
@@ -490,14 +490,14 @@ export default function AddProjectDialog({ open, onOpenChange, project, onSubmit
                     variant="outline"
                     onClick={() => handleClose(false)}
                     disabled={isLoading}
-                    className="h-12 min-w-[104px] rounded-[1.05rem] border-primary bg-white px-8 text-primary hover:bg-primary/5"
+                    className="h-12 min-w-[104px] rounded-[var(--radius-xs)] border-primary bg-white px-8 text-primary hover:bg-primary/5"
                   >
                     Annuleren
                   </Button>
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="h-12 min-w-[104px] rounded-[1.05rem] bg-primary px-8 text-white hover:bg-primary/90"
+                    className="h-12 min-w-[104px] rounded-[var(--radius-xs)] bg-primary px-8 text-white hover:bg-primary/90"
                   >
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Opslaan"}
                   </Button>

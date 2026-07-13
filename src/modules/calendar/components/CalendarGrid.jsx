@@ -175,7 +175,7 @@ const CalendarGrid = memo(function CalendarGrid({
                           e.stopPropagation();
                           onEventClick(ev);
                         }}
-                        className="block w-full text-left truncate rounded-[var(--radius-xs)] px-1.5 py-0.5 text-[10px] font-semibold bg-primary/10 text-primary border-l-2 border-primary/70 hover:bg-primary/15 transition-all"
+                        className="block w-full text-left truncate rounded-[var(--radius-xs)] px-1.5 py-0.5 text-[10px] font-semibold bg-primary/10 text-primary hover:bg-primary/15 transition-all"
                       >
                         {ev.summary || ev.title}
                       </button>

@@ -55,14 +55,14 @@ export default function Header() {
       {/* Mobile Menu Trigger & Title */}
       <div className="flex items-center gap-4">
         <Sheet>
-          <SheetTrigger className="lg:hidden p-2 -ml-2 rounded-md hover:bg-gray-100">
-            <Menu className="h-6 w-6 text-gray-700" />
+          <SheetTrigger className="lg:hidden p-2 -ml-2 rounded-md hover:bg-muted">
+            <Menu className="h-6 w-6 text-title" />
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[260px]">
             <Sidebar />
           </SheetContent>
         </Sheet>
-        <h1 className="text-xl font-bold text-gray-700 hidden sm:block">
+        <h1 className="text-xl font-bold text-title hidden sm:block">
           {pageTitle}
         </h1>
       </div>

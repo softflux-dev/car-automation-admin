@@ -1,6 +1,5 @@
 import { Search, Eye, Pencil, Trash2, Loader2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DataTable from "@/components/table/DataTable";
+import { Badge } from "../ui/badge";
 
 const COLS = ["Naam", "Datum", "Status", "Acties"];
 
@@ -40,26 +40,26 @@ export default function CertificatesTab({
             {isFiltering ? (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : (
-              <Search className="h-4 w-4 text-[#b0b0b0]" />
+              <Search className="h-4 w-4 text-subtitle" />
             )}
           </div>
           <Input
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Zoek op certificaatnaam..."
-            className="h-11 rounded-2xl border-0 bg-white pl-9 shadow-sm placeholder:text-[#c2c2c2]"
+            className="h-11 rounded-[var(--radius)] border-0 bg-white pl-9 shadow-sm placeholder:text-subtitle"
           />
         </div>
         <Select value={statusFilter} onValueChange={onStatusChange}>
           <SelectTrigger
-            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[170px] ${statusFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+            className={`h-11 w-full rounded-[var(--radius)] border-0 bg-white shadow-sm sm:w-[170px] ${statusFilter === "all" ? "text-subtitle" : "text-title"}`}
           >
             <SelectValue placeholder="Alle statussen" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem
               value="all"
-              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+              className="text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle"
             >
               Alle statussen
             </SelectItem>
@@ -69,7 +69,7 @@ export default function CertificatesTab({
         </Select>
       </div>
 
-      <span className="block text-sm text-[#8b8b8b]">
+      <span className="block text-sm text-subtitle">
         Totaal: {pagination.total} certificaten
       </span>
 
@@ -79,7 +79,7 @@ export default function CertificatesTab({
             key: "name",
             label: "Naam",
             headClassName:
-              "h-14 bg-[#f4f4f4] px-5 text-sm font-medium text-[#7b7b7b] whitespace-nowrap rounded-l-3xl",
+              "h-14 bg-muted px-5 text-sm font-medium text-subtitle whitespace-nowrap rounded-l-3xl",
             cellClassName: "px-5 py-4 min-w-[180px]",
             render: (row) => {
               const imageUrl = row.images?.[0]?.url || row.image || "";
@@ -89,7 +89,7 @@ export default function CertificatesTab({
                     <AvatarImage src={imageUrl} alt={row.name} />
                     <AvatarFallback>{row.name.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <span className="font-medium text-[#111111] truncate max-w-[160px]">
+                  <span className="font-medium text-title truncate max-w-[160px]">
                     {row.name}
                   </span>
                 </div>
@@ -100,9 +100,9 @@ export default function CertificatesTab({
             key: "date",
             label: "Datum",
             headClassName:
-              "h-14 bg-[#f4f4f4] px-5 text-sm font-medium text-[#7b7b7b] whitespace-nowrap",
+              "h-14 bg-muted px-5 text-sm font-medium text-subtitle whitespace-nowrap",
             cellClassName:
-              "px-5 py-4 text-sm text-[#3e3e3e] whitespace-nowrap min-w-[110px]",
+              "px-5 py-4 text-sm text-title whitespace-nowrap min-w-[110px]",
             render: (row) =>
               row.receivedDate
                 ? new Intl.DateTimeFormat("nl-NL").format(
@@ -114,14 +114,14 @@ export default function CertificatesTab({
             key: "status",
             label: "Status",
             headClassName:
-              "h-14 bg-[#f4f4f4] px-5 text-sm font-medium text-[#7b7b7b] whitespace-nowrap",
+              "h-14 bg-muted px-5 text-sm font-medium text-subtitle whitespace-nowrap",
             cellClassName: "px-5 py-4 min-w-[90px]",
             render: (row) => (
               <Badge
                 className={
                   row.status === "active"
                     ? "border-0 bg-emerald-100 text-emerald-600 whitespace-nowrap"
-                    : "border-0 bg-gray-200 text-gray-700 whitespace-nowrap"
+                    : "border-0 bg-gray-200 text-title whitespace-nowrap"
                 }
               >
                 {row.status === "active" ? "Actief" : "Inactief"}
@@ -132,7 +132,7 @@ export default function CertificatesTab({
             key: "actions",
             label: "Acties",
             headClassName:
-              "h-14 bg-[#f4f4f4] px-5 text-sm font-medium text-[#7b7b7b] whitespace-nowrap rounded-r-3xl",
+              "h-14 bg-muted px-5 text-sm font-medium text-subtitle whitespace-nowrap rounded-r-3xl",
             cellClassName: "px-5 py-4 min-w-[110px]",
             render: (row) => {
               const id = row._id || row.id;
@@ -140,7 +140,7 @@ export default function CertificatesTab({
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
-                    className="rounded-lg p-2 text-[#a9a9a9] transition-colors hover:bg-muted hover:text-[#8a8a8a]"
+                    className="rounded-lg p-2 text-subtitle"
                     onClick={() => onView(row)}
                   >
                     {viewLoadingId === id ? (
@@ -151,7 +151,7 @@ export default function CertificatesTab({
                   </button>
                   <button
                     type="button"
-                    className="rounded-lg p-2 text-[#a9a9a9] transition-colors hover:bg-muted hover:text-[#8a8a8a]"
+                    className="rounded-lg p-2 text-subtitle"
                     disabled={!!loading.update?.[id]}
                     onClick={() => onEdit(row)}
                   >
@@ -163,12 +163,12 @@ export default function CertificatesTab({
                   </button>
                   <button
                     type="button"
-                    className="rounded-lg p-2 text-[#ff1f1f] transition-colors hover:bg-muted hover:text-[#ff1f1f]"
+                    className="rounded-lg p-2 text-destructive"
                     disabled={!!loading.delete?.[id]}
                     onClick={() => onDelete(row)}
                   >
                     {loading.delete?.[id] ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-[#ff1f1f]" />
+                      <Loader2 className="h-4 w-4 animate-spin text-destructive" />
                     ) : (
                       <Trash2 className="h-4 w-4" />
                     )}

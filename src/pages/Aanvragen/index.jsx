@@ -47,7 +47,7 @@ function useDebounce(value, delay = 450) {
 
 export default function AanvragenPage() {
   const allServicesTextClassName =
-    "text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]";
+    "text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle";
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { inquiries, pagination, servicesDropdown, loading } = useAppSelector(
@@ -348,7 +348,7 @@ export default function AanvragenPage() {
 
         if (row.isAddedToCalendar) {
           return (
-            <Badge className="border-0 bg-emerald-100 text-emerald-700 text-xs font-medium px-3 py-1">
+            <Badge className="border-0 bg-success-bg text-success text-xs font-medium px-3 py-1 [&:hover]:bg-success-bg [&:hover]:text-success">
               <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
               Toegevoegd
             </Badge>
@@ -438,7 +438,7 @@ export default function AanvragenPage() {
             placeholder="Zoek op naam, e-mail of telefoon"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-11 rounded-2xl border-0 bg-white shadow-sm placeholder:text-[#c2c2c2]"
+            className="pl-9 h-11 rounded-2xl border-0 bg-white shadow-sm placeholder:text-subtitle"
           />
         </div>
 
@@ -447,7 +447,7 @@ export default function AanvragenPage() {
             className={cn(
               "h-11 w-full rounded-2xl border-0 bg-white shadow-sm lg:w-[200px]",
               serviceFilter === "all"
-                ? "text-[#9ca3af]"
+                ? "text-subtitle"
                 : "text-[var(--title)]",
             )}
           >
@@ -456,7 +456,7 @@ export default function AanvragenPage() {
           <SelectContent>
             <SelectItem
               value="all"
-              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+              className="text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle"
             >
               Alle diensten
             </SelectItem>

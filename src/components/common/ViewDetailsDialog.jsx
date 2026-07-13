@@ -48,16 +48,16 @@ export default function ViewDetailsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[920px] overflow-hidden rounded-[2.25rem] p-8">
+      <DialogContent className="max-w-[920px] overflow-hidden rounded-[var(--radius)] p-8">
         <DialogHeader className="pr-16">
-          <DialogTitle className="text-[1.05rem] font-bold text-[#111111] sm:text-[2rem]">
+          <DialogTitle className="text-[1.05rem] font-bold text-title sm:text-[2rem]">
             {title}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           {media.length > 0 && (
-            <div className="overflow-hidden rounded-[1.75rem]">
+            <div className="overflow-hidden rounded-[var(--radius-sm)]">
               <MediaCarousel media={media} />
             </div>
           )}
@@ -65,11 +65,11 @@ export default function ViewDetailsDialog({
           <div className="space-y-3">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-3xl font-bold text-[#111111]">
+                <h3 className="text-3xl font-bold text-title">
                   {data.title || data.details?.Naam || "Details"}
                 </h3>
                 {date ? (
-                  <div className="mt-2 flex items-center gap-2 text-sm text-[#7b7b7b]">
+                  <div className="mt-2 flex items-center gap-2 text-sm text-subtitle">
                     <CalendarDays className="h-4 w-4" />
                     <span>{date}</span>
                   </div>
@@ -83,7 +83,7 @@ export default function ViewDetailsDialog({
             </div>
 
             {description ? (
-              <div className="rounded-[1.75rem] bg-[#f5f5f5] px-6 py-6 text-[1.05rem] leading-relaxed text-[#707070]">
+              <div className="rounded-[var(--radius-sm)] bg-muted px-6 py-6 text-[1.05rem] leading-relaxed text-subtitle">
                 {description}
               </div>
             ) : null}
@@ -93,11 +93,11 @@ export default function ViewDetailsDialog({
             {Object.entries(data.details || {})
               .filter(([key]) => !["Naam", "Omschrijving", "Beschrijving", "Datum", "Status"].includes(key))
               .map(([key, value]) => (
-                <div key={key} className="rounded-[1.5rem] bg-[#f8f8f8] px-5 py-4">
-                  <div className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">
+                <div key={key} className="rounded-[var(--radius-sm)] bg-muted px-5 py-4">
+                  <div className="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-subtitle">
                     {key}
                   </div>
-                  <div className="text-sm font-medium text-[#232323]">
+                  <div className="text-sm font-medium text-title">
                     {String(value)}
                   </div>
                 </div>

@@ -57,7 +57,7 @@ const mockInquiries = [
 
 export default function RecentInquiries() {
   const allServicesTextClassName =
-    "text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]";
+    "text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle";
   const [date, setDate] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [serviceFilter, setServiceFilter] = useState("all");
@@ -111,7 +111,7 @@ export default function RecentInquiries() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtitle" />
           <Input
             value={searchTerm}
             onChange={(event) => {
@@ -132,7 +132,7 @@ export default function RecentInquiries() {
             }}
           >
             <SelectTrigger
-              className={`h-11 w-full rounded-xl border border-border/60 bg-white shadow-sm sm:w-[220px] ${serviceFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+              className={`h-11 w-full rounded-xl border border-border/60 bg-white shadow-sm sm:w-[220px] ${serviceFilter === "all" ? "text-subtitle" : "text-[var(--title)]"}`}
             >
               <SelectValue placeholder="Alle Diensten" />
             </SelectTrigger>
@@ -150,9 +150,9 @@ export default function RecentInquiries() {
 
           <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
             <PopoverTrigger asChild>
-              <button className="flex h-11 min-w-[160px] items-center justify-between gap-2 rounded-xl border border-border/60 bg-white px-4 text-sm text-[#9ca3af] shadow-sm transition-colors hover:text-gray-900">
+              <button className="flex h-11 min-w-[160px] items-center justify-between gap-2 rounded-xl border border-border/60 bg-white px-4 text-sm text-subtitle shadow-sm transition-colors hover:text-title">
                 {date ? format(date, "dd/MM/yyyy") : "Kies datum"}
-                <CalendarIcon className="h-4 w-4 text-[#9ca3af]" />
+                <CalendarIcon className="h-4 w-4 text-subtitle" />
               </button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-auto p-0">
@@ -166,10 +166,10 @@ export default function RecentInquiries() {
                 }}
                 className="rounded-md"
               />
-              <div className="flex justify-end border-t border-border/60 bg-slate-50 px-3 py-2">
+              <div className="flex justify-end border-t border-border/60 bg-muted px-3 py-2">
                 <button
                   type="button"
-                  className="rounded-md px-3 py-1 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
+                  className="rounded-md px-3 py-1 text-sm font-medium text-title transition hover:bg-muted hover:text-title"
                   onClick={() => {
                     setDate(null);
                     setPage(1);

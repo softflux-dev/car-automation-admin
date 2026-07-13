@@ -39,26 +39,26 @@ export default function DeleteDialog({
 
   return (
     <Dialog open={resolvedOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-[920px] rounded-[2.25rem] p-8 sm:p-8">
+      <DialogContent className="max-w-[920px] rounded-[var(--radius)] p-8 sm:p-8">
         <DialogHeader className="pr-16">
-          <DialogTitle className="text-[1.05rem] font-bold text-[#111111] sm:text-[2rem]">
+          <DialogTitle className="text-[1.05rem] font-bold text-title sm:text-[2rem]">
             {title}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="rounded-[1.75rem] bg-[#f5f5f5] px-6 py-5">
+        <div className="rounded-[var(--radius-sm)] bg-muted px-6 py-5">
           <div className="flex items-start gap-5">
-            <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-2xl bg-[#ffe8e8]">
-              <AlertTriangle className="h-7 w-7 text-[#ff1f1f]" />
+            <div className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-2xl bg-destructive/10">
+              <AlertTriangle className="h-7 w-7 text-destructive" />
             </div>
-            <DialogDescription className="pt-1 text-xl leading-tight text-[#6f6f6f] ">
+            <DialogDescription className="pt-1 text-xl leading-tight text-subtitle ">
               {resolvedDescription}
             </DialogDescription>
           </div>
         </div>
 
         {resolvedWarning && (
-          <div className="rounded-[1.75rem] bg-red-100 px-6 py-5">
+          <div className="rounded-[var(--radius-sm)] bg-red-100 px-6 py-5">
             <p className="text-sm leading-relaxed text-gray-700 font-medium">
               {resolvedWarning}
             </p>
@@ -70,7 +70,7 @@ export default function DeleteDialog({
             type="button"
             variant="outline"
             onClick={() => handleOpenChange(false)}
-            className="h-12 min-w-[138px] rounded-[1.1rem] border-primary bg-white px-7 text-base font-medium text-primary hover:bg-primary/5"
+            className="h-12 min-w-[138px] rounded-[var(--radius-xs)] border-primary bg-white px-7 text-base font-medium text-primary hover:bg-primary/5"
             disabled={loading}
           >
             {cancelText}
@@ -78,7 +78,7 @@ export default function DeleteDialog({
           <Button
             type="button"
             onClick={onConfirm}
-            className="h-12 min-w-[138px] rounded-[1.1rem] bg-primary px-7 text-base font-medium text-white hover:bg-primary/90"
+            className="h-12 min-w-[138px] rounded-[var(--radius-xs)] bg-primary px-7 text-base font-medium text-white hover:bg-primary/90"
             disabled={loading}
           >
             {loading ? "Bezig..." : confirmText}

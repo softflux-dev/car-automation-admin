@@ -49,7 +49,7 @@ export default function Sidebar() {
                 "group flex items-center gap-3 rounded-lg px-4 py-3 text-sm transition-all",
                 isActive
                   ? "bg-primary text-white rounded-lg"
-                  : "text-gray-500 hover:bg-muted hover:text-black rounded-lg transition-colors"
+                  : "text-subtitle hover:bg-muted hover:text-black rounded-lg transition-colors"
               )}
             >
               <img

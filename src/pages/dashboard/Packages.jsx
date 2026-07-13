@@ -239,11 +239,11 @@ export default function Packages() {
       render: (row) => (
         <div className="flex flex-col gap-0.5">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#111111] truncate max-w-[160px]">
+            <span className="font-semibold text-title truncate max-w-[160px]">
               {row.name}
             </span>
           </div>
-          <span className="text-xs text-[#9a9a9a]">
+          <span className="text-xs text-subtitle">
             {Array.isArray(row.features) ? row.features.length : 0} kenmerken
           </span>
         </div>
@@ -258,13 +258,13 @@ export default function Packages() {
           typeof s === "object" ? s.name : s,
         );
         if (!svcs.length)
-          return <span className="text-sm text-[#9a9a9a]">—</span>;
+          return <span className="text-sm text-subtitle">—</span>;
         return (
           <div className="flex flex-wrap gap-1">
             {svcs.map((name, i) => (
               <span
                 key={i}
-                className="inline-flex rounded-full bg-[#f0f0f0] px-2 py-0.5 text-xs text-[#3e3e3e]"
+                className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs text-title"
               >
                 {name}
               </span>
@@ -278,7 +278,7 @@ export default function Packages() {
       label: "Prijs",
       cellClassName: "whitespace-nowrap min-w-[80px]",
       render: (row) => (
-        <span className="text-sm font-medium text-[#111111]">
+        <span className="text-sm font-medium text-title">
           {row.price != null ? `€ ${row.price}` : "—"}
         </span>
       ),
@@ -305,7 +305,7 @@ export default function Packages() {
           className={
             row.status === "active"
               ? "border-0 bg-emerald-100 text-emerald-600 whitespace-nowrap"
-              : "border-0 bg-gray-200 text-gray-700 whitespace-nowrap"
+              : "border-0 bg-gray-200 text-title whitespace-nowrap"
           }
         >
           {row.status === "active" ? "Actief" : "Inactief"}
@@ -332,7 +332,7 @@ export default function Packages() {
       cellClassName: "min-w-[110px]",
       render: (row) => {
         const label = BADGE_LABELS[row.highlightBadge] || null;
-        if (!label) return <span className="text-sm text-[#9a9a9a]">—</span>;
+        if (!label) return <span className="text-sm text-subtitle">—</span>;
         return (
           <Badge
             variant="secondary"
@@ -351,7 +351,7 @@ export default function Packages() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="rounded-lg p-2 text-[#a9a9a9] transition-colors hover:bg-muted hover:text-[#8a8a8a]"
+            className="rounded-lg p-2 text-subtitle transition-colors hover:bg-muted hover:text-title"
             onClick={() => handleView(row)}
           >
             {viewLoading && viewingPkg?._id === row._id ? (
@@ -362,7 +362,7 @@ export default function Packages() {
           </button>
           <button
             type="button"
-            className="rounded-lg p-2 text-[#a9a9a9] transition-colors hover:bg-muted hover:text-[#8a8a8a]"
+            className="rounded-lg p-2 text-subtitle transition-colors hover:bg-muted hover:text-title"
             disabled={!!loading.update[row._id]}
             onClick={() => {
               setEditingPkg(row);
@@ -377,12 +377,12 @@ export default function Packages() {
           </button>
           <button
             type="button"
-            className="rounded-lg p-2 text-[#ff1f1f] transition-colors hover:bg-muted hover:text-[#ff1f1f]"
+            className="rounded-lg p-2 text-destructive transition-colors hover:bg-muted hover:text-destructive"
             disabled={!!loading.delete[row._id]}
             onClick={() => setDeletingPkg(row)}
           >
             {loading.delete[row._id] ? (
-              <Loader2 className="h-4 w-4 animate-spin text-[#ff1f1f]" />
+              <Loader2 className="h-4 w-4 animate-spin text-destructive" />
             ) : (
               <Trash2 className="h-4 w-4" />
             )}
@@ -397,8 +397,8 @@ export default function Packages() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111]">Pakketbeheer</h1>
-          <p className="text-sm text-[#8b8b8b]">
+          <h1 className="text-2xl font-bold text-title">Pakketbeheer</h1>
+          <p className="text-sm text-subtitle">
             Creëer, organiseer en beheer uw pakketten.
           </p>
         </div>
@@ -407,7 +407,7 @@ export default function Packages() {
             setEditingPkg(null);
             setModalOpen(true);
           }}
-          className="h-12 rounded-[1rem] bg-primary px-6 text-white hover:bg-primary/90"
+          className="h-12 rounded-[var(--radius-sm)] bg-primary px-6 text-white hover:bg-primary/90"
         >
           <Plus className="mr-2 h-4 w-4" />
           Nieuw pakket
@@ -421,27 +421,27 @@ export default function Packages() {
             {isFiltering ? (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : (
-              <Search className="h-4 w-4 text-[#b0b0b0]" />
+              <Search className="h-4 w-4 text-subtitle" />
             )}
           </div>
           <Input
             placeholder="Zoek pakketten..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-11 rounded-2xl border-0 bg-white pl-9 shadow-sm placeholder:text-[#c2c2c2]"
+            className="h-11 rounded-2xl border-0 bg-white pl-9 shadow-sm placeholder:text-subtitle"
           />
         </div>
 
         <Select value={serviceFilter} onValueChange={setServiceFilter}>
           <SelectTrigger
-            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[190px] ${serviceFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[190px] ${serviceFilter === "all" ? "text-subtitle" : "text-[var(--title)]"}`}
           >
             <SelectValue placeholder="Alle diensten" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem
               value="all"
-              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+              className="text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle"
             >
               Alle diensten
             </SelectItem>
@@ -455,14 +455,14 @@ export default function Packages() {
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger
-            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[170px] ${statusFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[170px] ${statusFilter === "all" ? "text-subtitle" : "text-[var(--title)]"}`}
           >
             <SelectValue placeholder="Alle statussen" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem
               value="all"
-              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+              className="text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle"
             >
               Alle statussen
             </SelectItem>
@@ -473,14 +473,14 @@ export default function Packages() {
 
         <Select value={packageTypeFilter} onValueChange={setPackageTypeFilter}>
           <SelectTrigger
-            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[160px] ${packageTypeFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[160px] ${packageTypeFilter === "all" ? "text-subtitle" : "text-[var(--title)]"}`}
           >
             <SelectValue placeholder="Alle types" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem
               value="all"
-              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+              className="text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle"
             >
               Alle types
             </SelectItem>
@@ -493,7 +493,7 @@ export default function Packages() {
         </Select>
       </div>
 
-      <span className="text-sm text-[#8b8b8b]">
+      <span className="text-sm text-subtitle">
         Totaal: {pagination.total} pakketten
       </span>
 

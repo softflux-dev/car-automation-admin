@@ -23,7 +23,7 @@ export default function TablePagination({
 
   return (
     <div className="flex w-full items-center justify-between gap-3">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-subtitle">
         {from}–{to} van {total} resultaten
       </p>
 

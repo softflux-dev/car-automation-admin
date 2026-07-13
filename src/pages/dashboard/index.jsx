@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import DataTable from "@/components/table/DataTable";
-import StatCard from "@/components/dashboard/StatCard";
+import StatCard from "@/components/cards/StatCard";
 import { useAppSelector } from "@/store/hooks";
 import {
   getDashboardStats,
@@ -41,7 +41,7 @@ function useDebounce(value, delay = 450) {
 
 export default function Dashboard() {
   const allServicesTextClassName =
-    "text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]";
+    "text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle";
   const { toast } = useToast();
   const user = useAppSelector((s) => s.auth.user);
   const firstName = user?.firstName ?? user?.name?.split(" ")[0] ?? "Admin";
@@ -204,7 +204,7 @@ export default function Dashboard() {
           ? row.services.map((s) => s.name || s).join(", ")
           : row.service || "—";
         return (
-          <span className="text-sm text-[var(--text-muted)]">{names}</span>
+          <span className="text-sm text-[var(--text-muted)]">{names || "—"}</span>
         );
       },
     },
@@ -239,7 +239,7 @@ export default function Dashboard() {
         <h2 className="text-2xl font-bold text-[var(--title)] mb-1">
           Welkom terug, {firstName}!
         </h2>
-        <p className="text-[#7b7b7b] text-sm">
+        <p className="text-subtitle text-sm">
           Hier is wat er vandaag met uw bedrijf gebeurt.
         </p>
       </div>
@@ -276,7 +276,7 @@ export default function Dashboard() {
               {isFiltering ? (
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
               ) : (
-                <Search className="h-4 w-4 text-gray-400" />
+                <Search className="h-4 w-4 text-subtitle" />
               )}
             </div>
             <Input
@@ -290,7 +290,7 @@ export default function Dashboard() {
           <div className="flex w-full flex-col gap-3 sm:flex-row xl:w-auto">
             <Select value={serviceFilter} onValueChange={setServiceFilter}>
               <SelectTrigger
-                className={`h-11 w-full rounded-xl border border-border/60 bg-white shadow-sm sm:w-[200px] ${serviceFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+                className={`h-11 w-full rounded-xl border border-border/60 bg-white shadow-sm sm:w-[200px] ${serviceFilter === "all" ? "text-subtitle" : "text-[var(--title)]"}`}
               >
                 <SelectValue placeholder="Alle Diensten" />
               </SelectTrigger>
@@ -308,7 +308,7 @@ export default function Dashboard() {
 
             <Popover open={datePopoverOpen} onOpenChange={setDatePopoverOpen}>
               <PopoverTrigger asChild>
-                <button className="flex h-11 min-w-[150px] items-center justify-between gap-2 rounded-xl border border-border/60 bg-white px-4 text-sm text-gray-500 shadow-sm transition-colors hover:text-gray-900">
+                <button className="flex h-11 min-w-[150px] items-center justify-between gap-2 rounded-xl border border-border/60 bg-white px-4 text-sm text-subtitle shadow-sm transition-colors hover:text-title">
                   {dateFilter ? format(dateFilter, "dd/MM/yyyy") : "Kies datum"}
                   <CalendarIcon className="h-4 w-4 shrink-0" />
                 </button>
@@ -324,10 +324,10 @@ export default function Dashboard() {
                   }}
                   className="rounded-md"
                 />
-                <div className="flex justify-end border-t border-border/60 bg-slate-50 px-3 py-2">
+                <div className="flex justify-end border-t border-border/60 bg-muted px-3 py-2">
                   <button
                     type="button"
-                    className="rounded-md px-3 py-1 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                    className="rounded-md px-3 py-1 text-sm font-medium text-title transition hover:bg-muted"
                     onClick={() => {
                       setDateFilter(null);
                       setPage(1);

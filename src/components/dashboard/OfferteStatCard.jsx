@@ -1,10 +1,5 @@
-import StatCard from "@/components/dashboard/StatCard";
-import {
-  FileText,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-} from "lucide-react";
+import StatCard from "@/components/cards/StatCard";
+import { FileText, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 export default function OfferteStatCard({
   title,
@@ -49,21 +44,21 @@ export const OfferteStatCards = ({ stats = {} }) => {
         value={pendingQuotes}
         subtitle="Wachten op beoordeling"
         icon={Clock}
-        subtitleColor="text-amber-500"
+        subtitleColor="text-amber-600"
       />
       <OfferteStatCard
         title="Nieuwe Aanvragen"
         value={newQuotes}
         subtitle="Recent ontvangen"
         icon={AlertCircle}
-        subtitleColor="text-red-500"
+        subtitleColor="text-destructive"
       />
       <OfferteStatCard
         title="Goedgekeurd"
         value={approvedQuotes}
         subtitle="Klant akkoord"
         icon={CheckCircle}
-        subtitleColor="text-green-500"
+        subtitleColor="text-success"
       />
     </>
   );

@@ -68,7 +68,7 @@ export function MediaCarousel({ media = [], onMediaClick }) {
   return (
     <div className="flex w-full flex-col gap-4 lg:flex-row">
       <button
-        className="group relative min-h-[280px] flex-1 overflow-hidden rounded-2xl bg-gray-100 sm:min-h-[380px] lg:min-h-[480px] xl:min-h-[560px]"
+        className="group relative min-h-[280px] flex-1 overflow-hidden rounded-2xl bg-muted sm:min-h-[380px] lg:min-h-[480px] xl:min-h-[560px]"
         onClick={handleHeroClick}
         aria-label="Volledig scherm bekijken"
       >
@@ -93,22 +93,22 @@ export function MediaCarousel({ media = [], onMediaClick }) {
         {activeItem?.type === "video" && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/10">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-xl">
-              <Play className="ml-1 h-6 w-6 fill-[#1072B7] text-[#1072B7]" />
+              <Play className="ml-1 h-6 w-6 fill-primary text-primary" />
             </div>
           </div>
         )}
       </button>
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-3 lg:hidden">
+      <div className="rounded-2xl border border-border bg-white p-3 lg:hidden">
         <div className="mb-3 flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-subtitle">
             Media selecteren
           </span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => scrollMobileThumbnails(-1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:border-[#88C8F7] hover:text-[#1072B7]"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-subtitle transition-colors hover:border-primary/40 hover:text-primary"
               aria-label="Scroll thumbnails naar links"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -116,7 +116,7 @@ export function MediaCarousel({ media = [], onMediaClick }) {
             <button
               type="button"
               onClick={() => scrollMobileThumbnails(1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors hover:border-[#88C8F7] hover:text-[#1072B7]"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-subtitle transition-colors hover:border-primary/40 hover:text-primary"
               aria-label="Scroll thumbnails naar rechts"
             >
               <ChevronRight className="h-4 w-4" />
@@ -135,8 +135,8 @@ export function MediaCarousel({ media = [], onMediaClick }) {
               className={cn(
                 "relative h-24 w-32 shrink-0 overflow-hidden rounded-xl border bg-white transition-all sm:h-28 sm:w-36",
                 safeActiveIndex === index
-                  ? "border-[#1072B7] ring-2 ring-[#1072B7]"
-                  : "border-gray-200 hover:border-[#88C8F7]"
+                  ? "border-primary ring-2 ring-primary"
+                  : "border-border hover:border-primary/40"
               )}
               aria-label={`Thumbnail ${index + 1}`}
             >
@@ -148,7 +148,7 @@ export function MediaCarousel({ media = [], onMediaClick }) {
               {item.type === "video" && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/10">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-md">
-                    <Play className="ml-0.5 h-4 w-4 fill-[#1072B7] text-[#1072B7]" />
+                    <Play className="ml-0.5 h-4 w-4 fill-primary text-primary" />
                   </div>
                 </div>
               )}
@@ -157,17 +157,17 @@ export function MediaCarousel({ media = [], onMediaClick }) {
         </div>
       </div>
 
-      <div className="hidden overflow-hidden rounded-2xl border border-gray-200 bg-white lg:flex lg:w-[240px] lg:min-w-[240px] lg:flex-col xl:w-[280px] xl:min-w-[280px]">
+      <div className="hidden overflow-hidden rounded-2xl border border-border bg-white lg:flex lg:w-[240px] lg:min-w-[240px] lg:flex-col xl:w-[280px] xl:min-w-[280px]">
         <button
           onClick={() => setThumbOffset((offset) => Math.max(0, offset - 1))}
           disabled={!canScrollUp}
-          className="flex items-center justify-center border-b border-gray-100 py-2.5 transition-colors hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-20"
+          className="flex items-center justify-center border-b border-border/50 py-2.5 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-20"
           aria-label="Scroll omhoog"
         >
           <ChevronUp
             className={cn(
               "h-5 w-5",
-              canScrollUp ? "text-[#1072B7]" : "text-gray-300"
+              canScrollUp ? "text-primary" : "text-subtitle/60"
             )}
           />
         </button>
@@ -183,7 +183,7 @@ export function MediaCarousel({ media = [], onMediaClick }) {
                 className={cn(
                   "relative flex-1 overflow-hidden transition-all duration-200",
                   safeActiveIndex === realIndex
-                    ? "ring-2 ring-inset ring-[#1072B7]"
+                    ? "ring-2 ring-inset ring-primary"
                     : "hover:opacity-80"
                 )}
                 aria-label={`Thumbnail ${realIndex + 1}`}
@@ -197,7 +197,7 @@ export function MediaCarousel({ media = [], onMediaClick }) {
                 {item.type === "video" && (
                   <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/10">
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 shadow-md">
-                      <Play className="ml-0.5 h-4 w-4 fill-[#1072B7] text-[#1072B7]" />
+                      <Play className="ml-0.5 h-4 w-4 fill-primary text-primary" />
                     </div>
                   </div>
                 )}
@@ -213,13 +213,13 @@ export function MediaCarousel({ media = [], onMediaClick }) {
             )
           }
           disabled={!canScrollDown}
-          className="flex items-center justify-center border-t border-gray-100 py-2.5 transition-colors hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-20"
+          className="flex items-center justify-center border-t border-border/50 py-2.5 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-20"
           aria-label="Scroll omlaag"
         >
           <ChevronDown
             className={cn(
               "h-5 w-5",
-              canScrollDown ? "text-[#1072B7]" : "text-gray-300"
+              canScrollDown ? "text-primary" : "text-subtitle/60"
             )}
           />
         </button>

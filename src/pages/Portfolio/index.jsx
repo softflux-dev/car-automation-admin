@@ -210,7 +210,7 @@ export default function PortfolioPage() {
                 {row.title?.charAt(0)}
               </AvatarFallback>
             </Avatar>
-            <span className="font-medium text-[#111111] truncate max-w-[160px]">
+            <span className="font-medium text-title truncate max-w-[160px]">
               {row.title}
             </span>
           </div>
@@ -222,7 +222,7 @@ export default function PortfolioPage() {
       label: "Media",
       cellClassName: "min-w-[80px]",
       render: (row) => (
-        <span className="text-sm text-[#3e3e3e]">
+        <span className="text-sm text-title">
           {row.media?.length ?? 0} bestand(en)
         </span>
       ),
@@ -264,7 +264,7 @@ export default function PortfolioPage() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="rounded-lg p-2 text-[#a9a9a9] transition-colors hover:bg-muted hover:text-[#8a8a8a]"
+            className="rounded-lg p-2 text-subtitle transition-colors hover:bg-muted hover:text-title"
             onClick={() => handleView(row)}
           >
             {viewLoading && viewingProject?._id === row._id ? (
@@ -275,7 +275,7 @@ export default function PortfolioPage() {
           </button>
           <button
             type="button"
-            className="rounded-lg p-2 text-[#a9a9a9] transition-colors hover:bg-muted hover:text-[#8a8a8a]"
+            className="rounded-lg p-2 text-subtitle transition-colors hover:bg-muted hover:text-title"
             disabled={!!loading.update[row._id]}
             onClick={() => {
               setEditingProject(row);
@@ -290,12 +290,12 @@ export default function PortfolioPage() {
           </button>
           <button
             type="button"
-            className="rounded-lg p-2 text-[#ff1f1f] transition-colors hover:bg-muted hover:text-[#ff1f1f]"
+            className="rounded-lg p-2 text-destructive transition-colors hover:bg-muted hover:text-destructive"
             disabled={!!loading.delete[row._id]}
             onClick={() => setDeletingProject(row)}
           >
             {loading.delete[row._id] ? (
-              <Loader2 className="h-4 w-4 animate-spin text-[#ff1f1f]" />
+              <Loader2 className="h-4 w-4 animate-spin text-destructive" />
             ) : (
               <Trash2 className="h-4 w-4" />
             )}
@@ -310,8 +310,8 @@ export default function PortfolioPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#111111]">Portfoliobeheer</h1>
-          <p className="text-sm text-[#8b8b8b]">
+          <h1 className="text-2xl font-bold text-title">Portfoliobeheer</h1>
+          <p className="text-sm text-subtitle">
             Maak, organiseer en beheer uw projecten.
           </p>
         </div>
@@ -320,7 +320,7 @@ export default function PortfolioPage() {
             setEditingProject(null);
             setModalOpen(true);
           }}
-          className="h-12 rounded-[1rem] bg-primary px-6 text-white hover:bg-primary/90"
+          className="h-12 rounded-[var(--radius-sm)] bg-primary px-6 text-white hover:bg-primary/90"
         >
           <Plus className="mr-2 h-4 w-4" />
           Nieuw project
@@ -334,26 +334,26 @@ export default function PortfolioPage() {
             {isFiltering ? (
               <Loader2 className="h-4 w-4 animate-spin text-primary" />
             ) : (
-              <Search className="h-4 w-4 text-[#b0b0b0]" />
+              <Search className="h-4 w-4 text-subtitle" />
             )}
           </div>
           <Input
             placeholder="Zoek op projecttitel..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-11 rounded-2xl border-0 bg-white pl-9 shadow-sm placeholder:text-[#c2c2c2]"
+            className="h-11 rounded-2xl border-0 bg-white pl-9 shadow-sm placeholder:text-subtitle"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger
-            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[170px] ${statusFilter === "all" ? "text-[#9ca3af]" : "text-[var(--title)]"}`}
+            className={`h-11 w-full rounded-2xl border-0 bg-white shadow-sm sm:w-[170px] ${statusFilter === "all" ? "text-subtitle" : "text-[var(--title)]"}`}
           >
             <SelectValue placeholder="Alle statussen" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem
               value="all"
-              className="text-[#9ca3af] focus:text-[#9ca3af] data-[state=checked]:text-[#9ca3af]"
+              className="text-subtitle focus:text-subtitle data-[state=checked]:text-subtitle"
             >
               Alle statussen
             </SelectItem>
@@ -363,7 +363,7 @@ export default function PortfolioPage() {
         </Select>
       </div>
 
-      <span className="text-sm text-[#8b8b8b]">
+      <span className="text-sm text-subtitle">
         Totaal: {pagination.total} projecten
       </span>
 

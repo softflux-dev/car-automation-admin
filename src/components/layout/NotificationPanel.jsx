@@ -98,10 +98,10 @@ export default function NotificationPanel() {
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-[360px] p-0 overflow-hidden rounded-2xl shadow-xl bg-white border border-[#ececec]"
+        className="w-[360px] p-0 overflow-hidden rounded-2xl shadow-xl bg-white border border-border"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#ececec]">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-bold text-[var(--title)]">Het bericht</h3>
             {unreadCount > 0 && (
@@ -129,10 +129,10 @@ export default function NotificationPanel() {
             </div>
           ) : notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-14 px-6 text-center">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#f5f5f5]">
-                <Bell className="h-4.5 w-4.5 text-[#c0c0c0]" />
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-muted">
+                <Bell className="h-4.5 w-4.5 text-subtitle" />
               </div>
-              <p className="text-sm font-medium text-[#111111]">Geen meldingen</p>
+              <p className="text-sm font-medium text-title">Geen meldingen</p>
               <p className="text-xs text-[var(--text-muted)]">U bent helemaal bij.</p>
             </div>
           ) : (
@@ -148,8 +148,8 @@ export default function NotificationPanel() {
                     className={[
                       "w-full text-left flex items-start gap-3 rounded-xl px-3.5 py-3 transition-colors",
                       n.isRead
-                        ? "bg-white hover:bg-[#fafafa] cursor-default"
-                        : "bg-[#f4f6ff] hover:bg-[#eaedff] cursor-pointer",
+                        ? "bg-white hover:bg-muted cursor-default"
+                        : "bg-primary/5 hover:bg-primary/10 cursor-pointer",
                     ].join(" ")}
                   >
                     {/* Dot / spinner */}
@@ -160,7 +160,7 @@ export default function NotificationPanel() {
                         <span
                           className={[
                             "block h-2 w-2 rounded-full transition-colors",
-                            n.isRead ? "bg-[#e0e0e0]" : "bg-primary",
+                            n.isRead ? "bg-muted-foreground/20" : "bg-primary",
                           ].join(" ")}
                         />
                       )}
@@ -170,7 +170,7 @@ export default function NotificationPanel() {
                     <div className="flex-1 min-w-0">
                       <p className={[
                         "text-sm leading-snug",
-                        n.isRead ? "font-normal text-[#777]" : "font-semibold text-[#111111]",
+                        n.isRead ? "font-normal text-subtitle" : "font-semibold text-title",
                       ].join(" ")}>
                         {n.title ?? n.message ?? "Melding"}
                       </p>
@@ -199,7 +199,7 @@ export default function NotificationPanel() {
 
         {/* Footer */}
         {notifications.length > 0 && (
-          <div className="border-t border-[#ececec] px-5 py-2.5">
+          <div className="border-t border-border px-5 py-2.5">
             <p className="text-center text-[11px] text-[var(--text-muted)]">
               {unreadCount > 0
                 ? `${unreadCount} ongelezen melding${unreadCount !== 1 ? "en" : ""}`

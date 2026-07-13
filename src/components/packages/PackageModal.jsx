@@ -54,15 +54,15 @@ function MultiSelectDropdown({ options, selected, onChange, placeholder, loading
           )}
         >
           {loading ? (
-            <span className="flex items-center gap-2 text-[#b3b3b3]">
+            <span className="flex items-center gap-2 text-subtitle">
               <Loader2 className="h-3.5 w-3.5 animate-spin" /> Laden...
             </span>
           ) : selectedLabels.length > 0 ? (
-            <span className="truncate text-[#111111]">{selectedLabels.join(", ")}</span>
+            <span className="truncate text-title">{selectedLabels.join(", ")}</span>
           ) : (
-            <span className="text-[#b3b3b3]">{placeholder}</span>
+            <span className="text-subtitle">{placeholder}</span>
           )}
-          <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#9a9a9a] transition-transform", open && "rotate-180")} />
+          <ChevronDown className={cn("h-4 w-4 shrink-0 text-subtitle transition-transform", open && "rotate-180")} />
         </button>
       </PopoverPrimitive.Trigger>
 
@@ -73,7 +73,7 @@ function MultiSelectDropdown({ options, selected, onChange, placeholder, loading
           className="z-[200] w-[var(--radix-popover-trigger-width)] overflow-hidden rounded-xl border border-border/60 bg-white shadow-lg"
         >
           {options.length === 0 ? (
-            <p className="px-3 py-3 text-sm text-[#9a9a9a]">{emptyText}</p>
+            <p className="px-3 py-3 text-sm text-subtitle">{emptyText}</p>
           ) : (
             <div className="max-h-52 overflow-y-auto py-1">
               {options.map((opt) => {
@@ -83,11 +83,11 @@ function MultiSelectDropdown({ options, selected, onChange, placeholder, loading
                     key={opt.value}
                     type="button"
                     onClick={() => toggle(opt.value)}
-                    className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-[#111111] transition-colors hover:bg-[#f5f5f5]"
+                    className="flex w-full items-center gap-2.5 px-3 py-2.5 text-sm text-title transition-colors hover:bg-muted"
                   >
                     <span className={cn(
                       "flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors",
-                      checked ? "border-primary bg-primary" : "border-[#d0d0d0] bg-white"
+                      checked ? "border-primary bg-primary" : "border-border bg-white"
                     )}>
                       {checked && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
                     </span>
@@ -211,7 +211,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
     <DialogPrimitive.Root open={open} onOpenChange={handleClose}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[680px] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[2.25rem] bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
+        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 w-full max-w-[680px] translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[var(--radius)] bg-white p-0 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
           <DialogPrimitive.Close
             disabled={submitting}
             className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white opacity-90 transition-opacity hover:opacity-100 disabled:opacity-40"
@@ -221,29 +221,29 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
           </DialogPrimitive.Close>
 
           <div className="px-6 pb-4 pt-6 pr-16">
-            <h2 className="text-[1.8rem] font-bold text-[#111111]">
+            <h2 className="text-[1.8rem] font-bold text-title">
               {packageData ? "Pakket bewerken" : "Nieuw pakket toevoegen"}
             </h2>
           </div>
 
           <div className="max-h-[75vh] overflow-y-auto px-6 pb-6">
-            <div className="rounded-[1.9rem] bg-[#f5f5f5] p-5">
+            <div className="rounded-[var(--radius)] bg-[rgb(245,245,245)] p-5">
               <form
                 onSubmit={handleSubmit(submitPackage)}
                 className="space-y-5"
               >
                 {/* Name */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Pakketnaam
                   </Label>
                   <Input
                     placeholder="Voer pakketnaam in"
                     {...register("name")}
-                    className={`h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] ${errors.name ? "ring-2 ring-red-500" : ""}`}
+                    className={`h-11 rounded-xl border-0 bg-white text-title shadow-none placeholder:text-subtitle ${errors.name ? "ring-2 ring-red-500" : ""}`}
                   />
                   {errors.name && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-destructive">
                       {errors.name.message}
                     </p>
                   )}
@@ -251,7 +251,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
 
                 {/* Services multi-select */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Diensten
                   </Label>
                   <MultiSelectDropdown
@@ -296,7 +296,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     </div>
                   )}
                   {errors.services && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-destructive">
                       {errors.services.message}
                     </p>
                   )}
@@ -304,7 +304,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
 
                 {/* Price */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Prijs (EUR)
                   </Label>
                   <Input
@@ -312,16 +312,16 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     min={0}
                     placeholder="Voer prijs in"
                     {...register("price")}
-                    className="h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3]"
+                    className="h-11 rounded-xl border-0 bg-white text-title shadow-none placeholder:text-subtitle"
                   />
                 </div>
 
                 {/* Duration */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Duur (minuten)
                   </Label>
-                  <p className="text-xs text-[#9a9a9a]">
+                  <p className="text-xs text-subtitle">
                     Hoe lang dit pakket duurt om te voltooien.
                   </p>
                   <Input
@@ -330,10 +330,10 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     step={15}
                     placeholder="Duur in minuten"
                     {...register("duration")}
-                    className={`h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] ${errors.duration ? "ring-2 ring-red-500" : ""}`}
+                    className={`h-11 rounded-xl border-0 bg-white text-title shadow-none placeholder:text-subtitle ${errors.duration ? "ring-2 ring-red-500" : ""}`}
                   />
                   {errors.duration && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-destructive">
                       {errors.duration.message}
                     </p>
                   )}
@@ -341,7 +341,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
 
                 {/* Package Type */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Pakkettype
                   </Label>
                   <Controller
@@ -352,7 +352,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger className="h-11 w-full rounded-xl border-0 bg-white shadow-none text-[#111111]">
+                        <SelectTrigger className="h-11 w-full rounded-xl border-0 bg-white shadow-none text-title">
                           <SelectValue placeholder="Selecteer type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -370,11 +370,11 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                 {/* Features */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-semibold text-[#111111]">
+                    <Label className="text-sm font-semibold text-title">
                       Kenmerken
                     </Label>
                     <span
-                      className={`text-xs ${features.length >= MAX_FEATURES ? "text-red-500" : "text-[#9a9a9a]"}`}
+                      className={`text-xs ${features.length >= MAX_FEATURES ? "text-destructive" : "text-subtitle"}`}
                     >
                       {features.length}/{MAX_FEATURES}
                     </span>
@@ -385,7 +385,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                       onChange={(e) => setFeatureInput(e.target.value)}
                       placeholder="Voeg een kenmerk toe"
                       disabled={features.length >= MAX_FEATURES}
-                      className="h-11 rounded-xl border-0 bg-white text-[#111111] shadow-none placeholder:text-[#b3b3b3] disabled:opacity-50"
+                      className="h-11 rounded-xl border-0 bg-white text-title shadow-none placeholder:text-subtitle disabled:opacity-50"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -405,7 +405,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     </Button>
                   </div>
                   {errors.features && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-destructive">
                       {errors.features.message}
                     </p>
                   )}
@@ -414,13 +414,13 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                       {features.map((feature, i) => (
                         <span
                           key={`${feature}-${i}`}
-                          className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-sm text-[#555]"
+                          className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-sm text-title"
                         >
                           {feature}
                           <button
                             type="button"
                             onClick={() => handleRemoveFeature(i)}
-                            className="text-red-400 transition-colors hover:text-red-600"
+                            className="text-destructive/80 transition-colors hover:text-destructive"
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
@@ -432,7 +432,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
 
                 {/* Highlight badges — checkbox pills */}
                 <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-[#111111]">
+                  <Label className="text-sm font-semibold text-title">
                     Uitgelicht label
                   </Label>
                   <div className="flex flex-wrap gap-2">
@@ -446,7 +446,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                         "inline-flex h-9 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors",
                         selectedBadges.length === 0
                           ? "border-primary bg-primary text-white"
-                          : "border-[#e0e0e0] bg-white text-[#555] hover:border-primary/40",
+                          : "border-border bg-white text-title hover:border-primary/40",
                       )}
                     >
                       {selectedBadges.length === 0 && (
@@ -473,7 +473,7 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                             "inline-flex h-9 items-center gap-1.5 rounded-full border px-4 text-sm font-medium transition-colors",
                             active
                               ? "border-primary bg-primary text-white"
-                              : "border-[#e0e0e0] bg-white text-[#555] hover:border-primary/40",
+                              : "border-border bg-white text-title hover:border-primary/40",
                           )}
                         >
                           {active && (
@@ -507,14 +507,14 @@ export default function PackageModal({ open, onOpenChange, packageData = null, o
                     variant="outline"
                     onClick={() => handleClose(false)}
                     disabled={submitting}
-                    className="h-12 min-w-[104px] rounded-[1.05rem] border-primary bg-white px-8 text-primary hover:bg-primary/5"
+                    className="h-12 min-w-[104px] rounded-[var(--radius-xs)] border-primary bg-white px-8 text-primary hover:bg-primary/5"
                   >
                     Annuleren
                   </Button>
                   <Button
                     type="submit"
                     disabled={submitting}
-                    className="h-12 min-w-[104px] rounded-[1.05rem] bg-primary px-8 text-white hover:bg-primary/90"
+                    className="h-12 min-w-[104px] rounded-[var(--radius-xs)] bg-primary px-8 text-white hover:bg-primary/90"
                   >
                     {submitting ? (
                       <Loader2 className="h-4 w-4 animate-spin" />

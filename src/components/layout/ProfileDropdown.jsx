@@ -92,7 +92,7 @@ export default function ProfileDropdown({ onLogoutClick }) {
 
           <button
             onClick={onLogoutClick ?? handleLogout}
-            className="flex items-center gap-2 w-full px-4 py-3 rounded-lg text-destructive font-medium hover:bg-red-50 transition-colors"
+            className="flex items-center gap-2 w-full px-4 py-3 rounded-lg text-destructive font-medium hover:bg-destructive/10 transition-colors"
           >
             <LogOut size={18} />
             Uitloggen

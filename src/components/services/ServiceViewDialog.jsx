@@ -29,9 +29,9 @@ export default function ServiceViewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] w-full max-w-[95vw] flex-col overflow-hidden rounded-[2.25rem] p-0 sm:max-w-[680px]">
-        <DialogHeader className="shrink-0 border-b border-[#ececec] px-6 py-5 pr-16">
-          <DialogTitle className="text-[1.4rem] font-bold text-[#111111] sm:text-2xl">
+      <DialogContent className="flex max-h-[90vh] w-full max-w-[95vw] flex-col overflow-hidden rounded-[var(--radius)] p-0 sm:max-w-[680px]">
+        <DialogHeader className="shrink-0 border-b border-border px-6 py-5 pr-16">
+          <DialogTitle className="text-[1.4rem] font-bold text-title sm:text-2xl">
             {title}
           </DialogTitle>
         </DialogHeader>
@@ -45,7 +45,7 @@ export default function ServiceViewDialog({
             <div className="space-y-5">
               {/* Image carousel */}
               {images.url && (
-                <div className="relative overflow-hidden rounded-2xl bg-[#f5f5f5]">
+                <div className="relative overflow-hidden rounded-2xl bg-muted">
                   <img
                     src={images?.url}
                     alt="Service Image"
@@ -57,11 +57,11 @@ export default function ServiceViewDialog({
               {/* Title + status */}
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate text-xl font-bold text-[#111111] sm:text-2xl">
+                  <h3 className="truncate text-xl font-bold text-title sm:text-2xl">
                     {name}
                   </h3>
                   {date && (
-                    <div className="mt-1.5 flex items-center gap-1.5 text-sm text-[#7b7b7b]">
+                    <div className="mt-1.5 flex items-center gap-1.5 text-sm text-subtitle">
                       <CalendarDays className="h-3.5 w-3.5 shrink-0" />
                       <span>{date}</span>
                     </div>
@@ -72,7 +72,7 @@ export default function ServiceViewDialog({
                     className={
                       status === "Actief"
                         ? "shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-100"
-                        : "shrink-0 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100"
+                        : "shrink-0 rounded-full bg-muted px-3 py-1 text-xs font-medium text-subtitle hover:bg-muted/80"
                     }
                   >
                     {status}
@@ -82,8 +82,8 @@ export default function ServiceViewDialog({
 
               {/* Description */}
               {description && (
-                <div className="w-full overflow-hidden rounded-2xl bg-[#f5f5f5] px-5 py-4">
-                  <p className="text-sm sm:text-base leading-7 text-gray-500 break-words whitespace-pre-line text-justify">
+                <div className="w-full overflow-hidden rounded-2xl bg-muted px-5 py-4">
+                  <p className="text-sm sm:text-base leading-7 text-subtitle break-words whitespace-pre-line text-justify">
                     {description}
                   </p>
                 </div>
@@ -95,12 +95,12 @@ export default function ServiceViewDialog({
                   {extraDetails.map(([key, value]) => (
                     <div
                       key={key}
-                      className="rounded-xl bg-[#f5f5f5] px-4 py-3"
+                      className="rounded-[var(--radius-sm)] bg-muted px-4 py-3"
                     >
-                      <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#9a9a9a]">
+                      <div className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-subtitle">
                         {key}
                       </div>
-                      <div className="text-sm font-medium text-[#232323]">
+                      <div className="text-sm font-medium text-title">
                         {String(value)}
                       </div>
                     </div>

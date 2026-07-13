@@ -340,21 +340,21 @@ export default function ServicesPage() {
   return (
     <div className="flex flex-col gap-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="h-auto w-full rounded-[1.7rem] border border-[#ececec] bg-white p-2">
-          <TabsTrigger value="services" className="h-12 flex-1 rounded-[1.2rem] text-base font-semibold text-[#111111] data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none">
+        <TabsList className="h-auto w-full rounded-[var(--radius)] border border-border bg-white p-2">
+          <TabsTrigger value="services" className="h-12 flex-1 rounded-[var(--radius-sm)] text-base font-semibold text-title data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none">
             Diensten
           </TabsTrigger>
-          <TabsTrigger value="certificates" className="h-12 flex-1 rounded-[1.2rem] text-base font-semibold text-[#111111] data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none">
+          <TabsTrigger value="certificates" className="h-12 flex-1 rounded-[var(--radius-sm)] text-base font-semibold text-title data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none">
             Certificaten
           </TabsTrigger>
         </TabsList>
 
         <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-[2rem] font-bold text-[#111111]">
+            <h1 className="text-[2rem] font-bold text-title">
               {activeTab === "services" ? "Dienstenbeheer" : "Certificatenbeheer"}
             </h1>
-            <p className="text-sm text-[#8b8b8b]">
+            <p className="text-sm text-subtitle">
               {activeTab === "services"
                 ? "Maak, organiseer en beheer uw dienstenaanbod."
                 : "Maak, organiseer en beheer uw certificaten."}
@@ -365,7 +365,7 @@ export default function ServicesPage() {
               if (activeTab === "services") { setEditingSvc(null); setSvcModalOpen(true); }
               else { setEditingCert(null); setCertModalOpen(true); }
             }}
-            className="h-12 rounded-[1rem] bg-primary px-6 text-white hover:bg-primary/90"
+            className="h-12 rounded-[var(--radius-sm)] bg-primary px-6 text-white hover:bg-primary/90"
           >
             <Plus className="mr-2 h-4 w-4" />
             {activeTab === "services" ? "Nieuwe dienst" : "Nieuw certificaat"}

@@ -39,17 +39,16 @@ export default function DataTable({
         </div>
       )}
 
-      <div className="overflow-x-auto px-4 pt-4">
+      <div className="overflow-x-auto">
         <Table className={cn("min-w-full", tableClassName)}>
-          <TableHeader className="[&_tr>th]:pt-3">
-            <TableRow className=" hover:bg-transparent">
+          <TableHeader>
+            <TableRow>
               {columns.map((col, index) => (
                 <TableHead
                   key={col.key}
                   className={cn(
-                    "h-14 bg-[#f4f4f4] px-5 py-3 text-sm font-medium text-[#7b7b7b] whitespace-nowrap",
-                    index === 0 && "rounded-l-3xl",
-                    index === columns.length - 1 && "rounded-r-3xl",
+                    "h-14 bg-muted px-5 text-sm font-medium text-muted-foreground whitespace-nowrap",
+                    index === 0 && "pl-5",
                     col.headClassName,
                   )}
                 >
@@ -77,10 +76,7 @@ export default function DataTable({
               </TableRow>
             ) : (
               data.map((row, rowIdx) => (
-                <TableRow
-                  key={row._id ?? row.id ?? rowIdx}
-                  className="group transition-colors hover:bg-[var(--secondary)]/40"
-                >
+                <TableRow key={row._id ?? row.id ?? rowIdx}>
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}

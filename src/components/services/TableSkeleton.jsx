@@ -5,7 +5,7 @@ export default function TableSkeleton({ rows = 5, cols = 7 }) {
     <TableRow key={r} className="border-b border-border">
       {Array.from({ length: cols }, (_, c) => (
         <TableCell key={c} className="px-5 py-4 border-b border-border">
-          <div className="h-4 w-full animate-pulse rounded-md bg-[#e8e5e1]" />
+          <div className="h-4 w-full animate-pulse rounded-md bg-muted" />
         </TableCell>
       ))}
     </TableRow>
