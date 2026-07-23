@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { X, Loader2, CalendarPlus, CheckCircle2, RotateCcw, ImageOff } from "lucide-react";
+import {
+  X,
+  Loader2,
+  CalendarPlus,
+  CheckCircle2,
+  RotateCcw,
+  ImageOff,
+} from "lucide-react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -157,13 +164,23 @@ export default function InquiryViewDialog({
                           key={pkg._id}
                           className="rounded-2xl bg-[rgb(var(--input))] px-3 py-2 space-y-1"
                         >
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                             <span className="text-sm font-medium text-[var(--title)]">
                               {pkg.name}
                             </span>
-                            <span className="text-sm font-semibold text-primary">
-                              €{pkg.price}
-                            </span>
+                            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+                              <span className="text-sm font-semibold text-primary">
+                                €{pkg.price}
+                              </span>
+                              <div className="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-1">
+                                <span className="text-xs sm:text-sm">
+                                  Duration:
+                                </span>
+                                <span className="text-sm font-semibold text-primary">
+                                  {pkg.duration} minuten
+                                </span>
+                              </div>
+                            </div>
                           </div>
                           {pkg.highlightBadge?.length > 0 && (
                             <div className="flex flex-wrap gap-1">
@@ -221,7 +238,8 @@ export default function InquiryViewDialog({
                 ) : (
                   <div className="flex flex-col gap-3">
                     <p className="text-sm text-[var(--text-muted)]">
-                      Voeg deze aanvraag toe aan uw agenda om de afspraak te plannen.
+                      Voeg deze aanvraag toe aan uw agenda om de afspraak te
+                      plannen.
                     </p>
                     <Button
                       onClick={() => onAddToCalendar?.(inquiry)}
@@ -263,14 +281,13 @@ export default function InquiryViewDialog({
                   label="Geboekt op"
                   value={
                     inquiry.bookedDate
-                      ? new Intl.DateTimeFormat("nl-NL").format(new Date(inquiry.bookedDate))
+                      ? new Intl.DateTimeFormat("nl-NL").format(
+                          new Date(inquiry.bookedDate),
+                        )
                       : "—"
                   }
                 />
-                <Field
-                  label="Geboekt om"
-                  value={inquiry.bookedTime || "—"}
-                />
+                <Field label="Geboekt om" value={inquiry.bookedTime || "—"} />
               </section>
             </div>
           )}
