@@ -179,7 +179,16 @@ export default function CertificatesTab({
           },
         ]}
         data={certificates}
-        pagination={pagination}
+        pagination={
+          pagination.total > 0
+            ? {
+                page: pagination.page,
+                pageSize: pagination.limit,
+                total: pagination.total,
+                onPageChange,
+              }
+            : null
+        }
         loading={showSkeleton}
         overlayLoading={showOverlay}
         emptyMessage="Geen certificaten gevonden."
