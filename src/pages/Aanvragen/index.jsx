@@ -35,6 +35,7 @@ import {
 } from "@/api/services/inquiriesService";
 import { getServicesDropdown } from "@/api/services/servicesService";
 import { useToast } from "@/hooks/use-toast";
+import CeramicBadge from "@/components/shared/CeramicBadge";
 
 function useDebounce(value, delay = 450) {
   const [debounced, setDebounced] = useState(value);
@@ -269,6 +270,11 @@ export default function AanvragenPage() {
       render: (row) => (
         <span className="font-semibold text-[var(--title)] truncate max-w-[240px] block">
           {row.name || "—"}
+          {row.isCeramicCoating && (
+            <span className="inline-flex items-center ml-1.5 align-middle">
+              <CeramicBadge />
+            </span>
+          )}
         </span>
       ),
     },

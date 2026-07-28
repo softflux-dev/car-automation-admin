@@ -47,7 +47,7 @@ export default function DataTable({
                 <TableHead
                   key={col.key}
                   className={cn(
-                    "h-14 bg-muted px-5 text-sm font-medium text-muted-foreground whitespace-nowrap",
+                    "h-12 bg-muted/80 px-5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 whitespace-nowrap",
                     index === 0 && "pl-5",
                     col.headClassName,
                   )}
@@ -69,19 +69,22 @@ export default function DataTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="px-5 py-12 text-center text-[var(--text-muted)]"
+                  className="px-5 py-16 text-center text-sm text-muted-foreground/60"
                 >
                   {emptyMessage}
                 </TableCell>
               </TableRow>
             ) : (
               data.map((row, rowIdx) => (
-                <TableRow key={row._id ?? row.id ?? rowIdx}>
+                <TableRow
+                  key={row._id ?? row.id ?? rowIdx}
+                  className="transition-colors duration-150 hover:bg-muted/40"
+                >
                   {columns.map((col) => (
                     <TableCell
                       key={col.key}
                       className={cn(
-                        "border-b border-border/60 px-5 py-4 text-sm text-[var(--text-muted)] transition-colors duration-150",
+                        "border-b border-border/40 px-5 py-3.5 text-sm text-[var(--text-muted)] transition-colors duration-150",
                         col.cellClassName,
                       )}
                     >

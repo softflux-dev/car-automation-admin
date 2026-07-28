@@ -13,6 +13,7 @@ import {
 } from "@/store/slices/notificationsSlice";
 import { fetchNotifications, markNotificationRead } from "@/api/services/notificationsService";
 import { useToast } from "@/hooks/use-toast";
+import CeramicBadge from "@/components/shared/CeramicBadge";
 
 function timeAgo(dateStr) {
   if (!dateStr) return "";
@@ -168,14 +169,21 @@ export default function NotificationPanel() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className={[
-                        "text-sm leading-snug",
-                        n.isRead ? "font-normal text-subtitle" : "font-semibold text-title",
-                      ].join(" ")}>
-                        {n.title ?? n.message ?? "Melding"}
-                      </p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p
+                          className={[
+                            "text-sm leading-snug",
+                            n.isRead
+                              ? "font-normal text-subtitle"
+                              : "font-semibold text-title",
+                          ].join(" ")}
+                        >
+                          {n.title ?? n.message ?? "Melding"}
+                        </p>
+                        {n.isCeramicCoating && <CeramicBadge />}
+                      </div>
                       {(n.description ?? n.body) && (
-                        <p className="mt-0.5 text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">
+                        <p className="mt-1 text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">
                           {n.description ?? n.body}
                         </p>
                       )}

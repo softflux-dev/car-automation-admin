@@ -24,6 +24,7 @@ import {
 } from "@/api/services/dashboardService";
 import { getServicesDropdown } from "@/api/services/servicesService";
 import { useToast } from "@/hooks/use-toast";
+import CeramicBadge from "@/components/shared/CeramicBadge";
 import totalServicesIcon from "@/assets/icons/totalServices.svg";
 import totalPackagesIcon from "@/assets/icons/totalPackages.svg";
 import totalInquiriesIcon from "@/assets/icons/totalInquires.svg";
@@ -183,7 +184,12 @@ export default function Dashboard() {
       key: "name",
       label: "Naam",
       cellClassName: "font-medium text-[var(--title)] min-w-[130px]",
-      render: (row) => row.name || "—",
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          <span>{row.name || "—"}</span>
+          {row.isCeramicCoating && <CeramicBadge />}
+        </div>
+      ),
     },
     {
       key: "email",
@@ -235,7 +241,8 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-8 max-w-[1200px] mx-auto w-full">
       {/* Welcome */}
-      <div>
+      <div className="relative pl-5">
+        <div className="absolute left-0 top-0 h-full w-0.5 rounded-full bg-primary/20" />
         <h2 className="text-2xl font-bold text-[var(--title)] mb-1">
           Welkom terug, {firstName}!
         </h2>
@@ -266,7 +273,7 @@ export default function Dashboard() {
       {/* Recent inquiries */}
       <div className="flex flex-col gap-4">
         <h3 className="text-lg font-bold text-[var(--title)]">
-          Recente Aanvragen
+          Recente aanvragen
         </h3>
 
         {/* Filter bar */}
