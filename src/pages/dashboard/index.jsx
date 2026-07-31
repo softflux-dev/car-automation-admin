@@ -24,7 +24,6 @@ import {
 } from "@/api/services/dashboardService";
 import { getServicesDropdown } from "@/api/services/servicesService";
 import { useToast } from "@/hooks/use-toast";
-import CeramicBadge from "@/components/shared/CeramicBadge";
 import totalServicesIcon from "@/assets/icons/totalServices.svg";
 import totalPackagesIcon from "@/assets/icons/totalPackages.svg";
 import totalInquiriesIcon from "@/assets/icons/totalInquires.svg";
@@ -187,7 +186,6 @@ export default function Dashboard() {
       render: (row) => (
         <div className="flex items-center gap-2">
           <span>{row.name || "—"}</span>
-          {row.isCeramicCoating && <CeramicBadge />}
         </div>
       ),
     },

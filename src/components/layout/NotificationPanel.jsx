@@ -13,7 +13,6 @@ import {
 } from "@/store/slices/notificationsSlice";
 import { fetchNotifications, markNotificationRead } from "@/api/services/notificationsService";
 import { useToast } from "@/hooks/use-toast";
-import CeramicBadge from "@/components/shared/CeramicBadge";
 
 function timeAgo(dateStr) {
   if (!dateStr) return "";
@@ -180,7 +179,6 @@ export default function NotificationPanel() {
                         >
                           {n.title ?? n.message ?? "Melding"}
                         </p>
-                        {n.isCeramicCoating && <CeramicBadge />}
                       </div>
                       {(n.description ?? n.body) && (
                         <p className="mt-1 text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">
