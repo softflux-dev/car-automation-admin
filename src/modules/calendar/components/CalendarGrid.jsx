@@ -40,6 +40,21 @@ const isAllDayEvent = (event) => {
   return diffHours >= 24;
 };
 
+const getEventDayRange = (event) => {
+  const startM = amsterdamMoment(event.start).startOf("day");
+  const endM = amsterdamMoment(event.end);
+  let lastDay = endM.clone().startOf("day");
+  if (endM.isSameOrBefore(lastDay)) {
+    lastDay = lastDay.subtract(1, "day");
+  }
+  if (lastDay.isBefore(startM)) {
+    lastDay = startM.clone();
+  }
+  return { startM, lastDay };
+};
+
+const MAX_ALL_DAY_LANES = 4;
+
 const now = new Date();
 
 const CalendarGrid = memo(function CalendarGrid({
@@ -54,6 +69,9 @@ const CalendarGrid = memo(function CalendarGrid({
     [weekStart]
   );
 
+  const weekStartM = amsterdamMoment(format(weekStart, "yyyy-MM-dd"));
+  const weekEndM = amsterdamMoment(format(addDays(weekStart, 6), "yyyy-MM-dd"));
+
   const eventsByDay = useMemo(() => {
     const list = Array.isArray(events) ? events.filter((ev) => !isAllDayEvent(ev)) : [];
     const map = {};
@@ -66,16 +84,46 @@ const CalendarGrid = memo(function CalendarGrid({
     return map;
   }, [days, events]);
 
-  const allDayEventsByDay = useMemo(() => {
+  const allDayLanes = useMemo(() => {
     const list = Array.isArray(events) ? events.filter((ev) => isAllDayEvent(ev)) : [];
-    const map = {};
-    days.forEach((day) => {
-      const key = format(day, "yyyy-MM-dd");
-      map[key] = list.filter((ev) => {
-        return amsterdamMoment(ev.start).format("YYYY-MM-DD") === key;
-      });
-    });
-    return map;
+    if (list.length === 0) return [];
+
+    const weekStartM = amsterdamMoment(format(days[0], "yyyy-MM-dd"));
+    const weekEndM = amsterdamMoment(format(days[6], "yyyy-MM-dd"));
+
+    const laidOut = list
+      .map((ev) => ({ ev, ...getEventDayRange(ev) }))
+      .filter(
+        ({ startM, lastDay }) =>
+          startM.valueOf() <= weekEndM.valueOf() &&
+          lastDay.valueOf() >= weekStartM.valueOf()
+      )
+      .sort(
+        (a, b) =>
+          a.startM.valueOf() - b.startM.valueOf() ||
+          b.lastDay.valueOf() - a.lastDay.valueOf()
+      );
+
+    const lanes = [];
+    for (const item of laidOut) {
+      const startVal = item.startM.valueOf();
+      const endVal = item.lastDay.valueOf();
+      let placed = false;
+      for (const lane of lanes) {
+        const clash = lane.some(
+          (other) =>
+            startVal <= other.lastDay.valueOf() &&
+            other.startM.valueOf() <= endVal
+        );
+        if (!clash) {
+          lane.push(item);
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) lanes.push([item]);
+    }
+    return lanes;
   }, [days, events]);
 
   const getOverlapGroups = (dayEvents) => {
@@ -141,49 +189,107 @@ const CalendarGrid = memo(function CalendarGrid({
       >
         {/* Day headers */}
         <div className="flex sticky top-0 z-20 bg-card border-b border-[var(--border-medium)]">
-          <div className="w-14 lg:w-16 shrink-0 border-r border-[var(--border-medium)] sticky left-0 z-10 bg-card" />
-          <div className="flex-1 grid grid-cols-7 min-w-[560px]">
-            {days.map((day) => (
-              <div
-                key={day.toISOString()}
-                className={`border-r border-[var(--border-medium)] last:border-r-0 ${
-                  isToday(day) ? "bg-[var(--bg-today-col)]" : ""
-                }`}
-              >
-                <div className="h-12 flex flex-col items-center justify-center">
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
-                    {format(day, "EEEEEE", { locale: nl })}
-                  </span>
-                  <span
-                    className={`text-sm lg:text-base font-bold leading-tight ${
-                      isToday(day)
-                        ? "bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm shadow-[0_0_0_3px_var(--primary-glow)]"
-                        : "text-foreground/80 w-8 h-8 flex items-center justify-center rounded-full transition-all hover:bg-[var(--primary-subtle)] hover:text-primary"
-                    }`}
-                  >
-                    {format(day, "d")}
-                  </span>
-                </div>
+          <div className="w-14 lg:w-16 shrink-0 border-r border-[var(--border-medium)] sticky left-0 z-10 bg-card flex flex-col">
+            <div className="h-12 shrink-0" />
+            <div className="flex-1 flex items-start justify-end pt-1 pr-1">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 leading-none">
+                Hele dag
+              </span>
+            </div>
+          </div>
 
-                {/* All-day events bar */}
-                {allDayEventsByDay[format(day, "yyyy-MM-dd")]?.length > 0 && (
-                  <div className="px-0.5 space-y-0.5 py-1 border-b border-[var(--border-medium)] bg-muted/10 min-h-[28px]">
-                    {allDayEventsByDay[format(day, "yyyy-MM-dd")].map((ev) => (
-                      <button
-                        key={ev.id || ev._id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEventClick(ev);
-                        }}
-                        className="block w-full text-left truncate rounded-[var(--radius-xs)] px-1.5 py-0.5 text-[10px] font-semibold bg-primary/10 text-primary hover:bg-primary/15 transition-all"
-                      >
-                        {ev.summary || ev.title}
-                      </button>
-                    ))}
+          <div className="flex-1 min-w-[560px]">
+            <div className="grid grid-cols-7">
+              {days.map((day) => (
+                <div
+                  key={day.toISOString()}
+                  className={`border-r border-[var(--border-medium)] last:border-r-0 ${
+                    isToday(day) ? "bg-[var(--bg-today-col)]" : ""
+                  }`}
+                >
+                  <div className="h-12 flex flex-col items-center justify-center">
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+                      {format(day, "EEEEEE", { locale: nl })}
+                    </span>
+                    <span
+                      className={`text-sm lg:text-base font-bold leading-tight ${
+                        isToday(day)
+                          ? "bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm shadow-[0_0_0_3px_var(--primary-glow)]"
+                          : "text-foreground/80 w-8 h-8 flex items-center justify-center rounded-full transition-all hover:bg-[var(--primary-subtle)] hover:text-primary"
+                      }`}
+                    >
+                      {format(day, "d")}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* All-day lanes */}
+            <div className="relative">
+              <div className="absolute inset-0 grid grid-cols-7 pointer-events-none">
+                {days.map((day) => (
+                  <div
+                    key={day.toISOString()}
+                    className={`border-r border-[var(--border-medium)] last:border-r-0 ${
+                      isToday(day) ? "bg-[var(--bg-today-col)]" : ""
+                    }`}
+                  />
+                ))}
+              </div>
+              <div className="relative z-10 min-h-6">
+                {allDayLanes.slice(0, MAX_ALL_DAY_LANES).map((lane, laneIdx) => (
+                  <div key={laneIdx} className="relative h-6">
+                    {lane.map((item) => {
+                      const startIdx = Math.max(
+                        0,
+                        Math.round(item.startM.diff(weekStartM, "days", true))
+                      );
+                      const endIdx = Math.min(
+                        6,
+                        Math.round(item.lastDay.diff(weekStartM, "days", true))
+                      );
+                      const startsVisible = item.startM.isSameOrAfter(weekStartM);
+                      const endsVisible = item.lastDay.isSameOrBefore(weekEndM);
+
+                      return (
+                        <button
+                          key={item.ev.id || item.ev._id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEventClick(item.ev);
+                          }}
+                          className={`absolute top-[1px] bottom-[1px] flex items-center overflow-hidden pl-1.5 pr-1 text-left text-[10px] font-semibold text-primary bg-primary/10 border border-primary/20 shadow-[var(--shadow-event)] hover:bg-primary/15 hover:border-primary/40 transition-all ${
+                            startsVisible ? "rounded-l-[var(--radius-xs)]" : ""
+                          } ${
+                            endsVisible ? "rounded-r-[var(--radius-xs)]" : ""
+                          }`}
+                          style={{
+                            left: `calc(${(startIdx * 100) / 7}% + 1px)`,
+                            width: `calc(${((endIdx - startIdx + 1) * 100) / 7}% - 2px)`,
+                          }}
+                        >
+                          {startsVisible ? (
+                            <span className="truncate">
+                              {item.ev.summary || item.ev.title}
+                            </span>
+                          ) : (
+                            <span className="shrink-0 text-[10px] font-bold leading-none">
+                              &raquo;
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+                {allDayLanes.length > MAX_ALL_DAY_LANES && (
+                  <div className="h-6 flex items-center pl-1.5 text-[10px] font-semibold text-muted-foreground">
+                    +{allDayLanes.length - MAX_ALL_DAY_LANES} meer
                   </div>
                 )}
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
@@ -238,7 +344,6 @@ const CalendarGrid = memo(function CalendarGrid({
 
                   {overlapGroups.map((group) =>
                     group.map((event, idx) => {
-                      const groupSize = group.length;
                       const overlappingCount = group.filter(
                         (e) =>
                           amsterdamMoment(e.start).valueOf() < amsterdamMoment(group[idx].end).valueOf() &&
